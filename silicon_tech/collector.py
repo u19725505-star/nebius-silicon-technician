@@ -77,7 +77,7 @@ class LiveHost:
         self.tick += 1
         return sample
 
-def _wake_latency_us(core, samples=6, spins=600000):
+def _wake_latency_us(core, samples=3, spins=20000):
     """p90 scheduling delay (wall time minus CPU time, in microseconds) of a fixed
     compute probe pinned to `core`. Rises when other work competes for the core."""
     try:
