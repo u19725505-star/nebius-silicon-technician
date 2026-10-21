@@ -14,7 +14,7 @@ Fault signatures (they can be mild or partial):
 - irq_storm: interrupt rate far above normal, latency jitter.
 - memory_stall: busy core with VERY low IPC (below ~1.0) and a high cache-miss rate (above ~15%) but NORMAL context switches and run queue.
 Rules: ignore physically implausible sensor glitches (for example a 0C temperature reading) when the
-window medians look normal. Work that the maintenance context says is scheduled is NOT a fault.
+window medians look normal. FIRST read the maintenance context: if a scheduled job is named for a core and that core shows the load that job would cause (for example one pinned core at ~100% util), that core is NOT faulty, so leave it out of faults entirely.
 Report ONE fault per core (the single best explanation); never list a core under two faults.
 Reply with ONLY a JSON object:
 {"faults": {"fault_name": [core numbers]}, "summary": "one sentence", "action": "one sentence"}
@@ -64,3 +64,30 @@ def diagnose_with_llm(window, context, model=None):
         if cs:
             faults[str(name).lower()] = cs
     return faults, parsed, usage
+
+def diagnose_with_llm(window, context, model=None):
+    """Retry once with a larger token budget if the model returns no usable JSON."""
+    from types import SimpleNamespace
+    prompt = build_prompt(window, context)
+    tin = tout = 0
+    parsed = None
+    for max_tokens in (2500, 6000):
+        text, usage = llm.ask(SYSTEM, prompt, model=model,
+                              max_tokens=max_tokens, temperature=0.0)
+        tin += usage.prompt_tokens
+        tout += usage.completion_tokens
+        parsed = parse(text)
+        if parsed is not None:
+            break
+    total = SimpleNamespace(prompt_tokens=tin, completion_tokens=tout)
+    if parsed is None:
+        return None, None, total
+    faults = {}
+    for name, cores in (parsed.get("faults") or {}).items():
+        try:
+            cs = sorted(int(x) for x in cores)
+        except (TypeError, ValueError):
+            continue
+        if cs:
+            faults[str(name).lower()] = cs
+    return faults, parsed, total
