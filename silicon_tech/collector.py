@@ -76,3 +76,26 @@ class LiveHost:
         }
         self.tick += 1
         return sample
+
+def _wake_latency_us(core, samples=6, spins=600000):
+    """p90 scheduling delay (wall time minus CPU time, in microseconds) of a fixed
+    compute probe pinned to `core`. Rises when other work competes for the core."""
+    try:
+        old = os.sched_getaffinity(0)
+        os.sched_setaffinity(0, {core})
+    except (AttributeError, OSError):
+        return None
+    try:
+        delays = []
+        for _ in range(samples):
+            w0, c0 = time.perf_counter(), time.process_time()
+            x = 0
+            for i in range(spins):
+                x += i
+            wall = time.perf_counter() - w0
+            cpu = time.process_time() - c0
+            delays.append(max(0.0, wall - cpu) * 1e6)
+        delays.sort()
+        return round(delays[int(len(delays) * 0.9)], 1)
+    finally:
+        os.sched_setaffinity(0, old)

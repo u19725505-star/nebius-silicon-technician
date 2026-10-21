@@ -5,7 +5,7 @@ from silicon_tech.agent import parse
 
 SYSTEM_LIVE = """You are a senior data center technician diagnosing a live Linux server.
 You get a BASELINE (medians from a healthy period) and the CURRENT window medians.
-Per core: util % and wake latency (p90 microseconds that a 1 ms sleep wakes late when pinned to that core).
+Per core: util % and scheduling delay (p90 microseconds that a fixed compute probe is held off the CPU when pinned to that core).
 System-wide: load average, context switches/s, interrupts/s. Missing counters show as n/a (no hardware counters here).
 Compare every core with its own baseline and with its peers.
 Fault signatures:
