@@ -18,6 +18,7 @@ def list_nvidia_models():
         if "nvidia" in m.id.lower():
             print(m.id)
 
+
 def ask(system, user, model=None, max_tokens=300, temperature=0.2):
     """Returns (text, usage). Keep max_tokens small to protect credits."""
     model = model or os.environ.get("NEBIUS_MODEL")
@@ -32,11 +33,7 @@ def ask(system, user, model=None, max_tokens=300, temperature=0.2):
         max_tokens=max_tokens,
         temperature=temperature,
     )
-    choice = r.choices[0]
-    if not choice.message.content:
-        print(f"   [warn] empty reply, finish_reason={choice.finish_reason}")
-    return choice.message.content or "", r.usage
-
+    return (r.choices[0].message.content or ""), r.usage
 
 
 if __name__ == "__main__":
