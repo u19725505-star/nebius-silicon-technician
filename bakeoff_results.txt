@@ -1,0 +1,89 @@
+
+== nvidia/Nemotron-3_5-Lightning
+   case00-runaway_process         OK    30.5s
+   case01-healthy-glitch          MISS 104.1s
+   case02-thermal-glitch          OK    93.0s
+   case03-memory_stall            MISS  52.9s
+   case04-memory_stall            OK    31.6s
+   case05-benign                  MISS  29.8s
+   case06-runaway_process         OK    27.2s
+   case07-memory_stall            MISS  27.4s
+   case08-runaway_process         OK    23.6s
+   case09-benign                  MISS  27.7s
+   case10-healthy-glitch          MISS  27.2s
+   case11-benign                  OK    27.8s
+   case12-thermal-glitch          OK    26.4s
+   case13-benign                  MISS  27.6s
+   case14-benign                  OK    32.3s
+   case15-memory_stall            MISS  27.8s
+   case16-runaway_process         MISS  27.2s
+   case17-irq_storm               MISS  30.2s
+   case18-runaway_process         MISS  27.5s
+   case19-benign                  MISS  31.0s
+
+== nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B
+   case00-runaway_process         OK     4.9s
+   case01-healthy-glitch          OK     8.9s
+   case02-thermal-glitch          OK     7.2s
+   case03-memory_stall            OK     7.6s
+   case04-memory_stall            OK     8.4s
+   case05-benign                  OK     5.5s
+   case06-runaway_process         MISS   5.7s
+   case07-memory_stall            OK    23.1s
+   case08-runaway_process         OK     6.8s
+   case09-benign                  OK    18.0s
+   case10-healthy-glitch          OK    14.8s
+   case11-benign                  OK     7.1s
+   case12-thermal-glitch          OK    10.3s
+   case13-benign                  OK     6.8s
+   case14-benign                  OK     7.0s
+   case15-memory_stall            MISS  10.4s
+   case16-runaway_process         MISS   9.0s
+   case17-irq_storm               MISS   8.3s
+   case18-runaway_process         OK     5.3s
+   case19-benign                  OK     4.4s
+
+== nvidia/nemotron-3-super-120b-a12b
+   case00-runaway_process         OK    10.2s
+   case01-healthy-glitch          OK     8.0s
+   case02-thermal-glitch          OK    10.2s
+   case03-memory_stall            OK     8.0s
+   case04-memory_stall            OK    11.7s
+   case05-benign                  OK    13.0s
+   case06-runaway_process         OK     6.3s
+   case07-memory_stall            OK    11.0s
+   case08-runaway_process         OK    14.4s
+   case09-benign                  OK     8.4s
+   case10-healthy-glitch          OK     9.6s
+   case11-benign                  OK     7.2s
+   case12-thermal-glitch          OK    15.1s
+   case13-benign                  OK     7.3s
+   case14-benign                  OK     6.0s
+   case15-memory_stall            OK     8.8s
+   case16-runaway_process         MISS  11.5s
+   case17-irq_storm               OK     8.5s
+   case18-runaway_process         OK     7.3s
+   case19-benign                  OK    13.1s
+
+model                                         correct  median    max   tok in  tok out  err
+rules (no LLM)                                   6/20       -      -        0        0    0
+nvidia/Nemotron-3_5-Lightning                    8/20   27.8s 104.1s    51638   164061    0
+nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B           16/20    7.4s  23.1s    29689    42468    0
+nvidia/nemotron-3-super-120b-a12b               19/20    9.2s  15.1s    25819    29523    0
+MISS [Nemotron-3_5-Lightning] case01-healthy-glitch: truth=none got=none
+MISS [Nemotron-3_5-Lightning] case03-memory_stall: truth={'memory_stall': [1]} got=none
+MISS [Nemotron-3_5-Lightning] case05-benign: truth=none got=none
+MISS [Nemotron-3_5-Lightning] case07-memory_stall: truth={'memory_stall': [0, 7]} got=none
+MISS [Nemotron-3_5-Lightning] case09-benign: truth=none got=none
+MISS [Nemotron-3_5-Lightning] case10-healthy-glitch: truth=none got=none
+MISS [Nemotron-3_5-Lightning] case13-benign: truth=none got=none
+MISS [Nemotron-3_5-Lightning] case15-memory_stall: truth={'memory_stall': [0, 6]} got=none
+MISS [Nemotron-3_5-Lightning] case16-runaway_process: truth={'runaway_process': [6]} got=none
+MISS [Nemotron-3_5-Lightning] case17-irq_storm: truth={'irq_storm': [0]} got=none
+MISS [Nemotron-3_5-Lightning] case18-runaway_process: truth={'runaway_process': [2]} got=none
+MISS [Nemotron-3_5-Lightning] case19-benign: truth=none got=none
+MISS [NVIDIA-Nemotron-3-Nano-30B-A3B] case06-runaway_process: truth={'runaway_process': [0]} got={'noisy_neighbor': [0]}
+MISS [NVIDIA-Nemotron-3-Nano-30B-A3B] case15-memory_stall: truth={'memory_stall': [0, 6]} got={'noisy_neighbor': [0], 'memory_stall': [6]}
+MISS [NVIDIA-Nemotron-3-Nano-30B-A3B] case16-runaway_process: truth={'runaway_process': [6]} got={'irq_storm': [6]}
+MISS [NVIDIA-Nemotron-3-Nano-30B-A3B] case17-irq_storm: truth={'irq_storm': [0]} got={'noisy_neighbor': [0]}
+MISS [nemotron-3-super-120b-a12b] case16-runaway_process: truth={'runaway_process': [6]} got={'noisy_neighbor': [1], 'irq_storm': [6]}
