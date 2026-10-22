@@ -47,3 +47,24 @@ if __name__ == "__main__":
         )
         print(text)
         print("tokens:", usage.prompt_tokens, "in,", usage.completion_tokens, "out")
+
+def ask(system, user, model=None, max_tokens=300, temperature=0.2):
+    """Same as before, plus NEBIUS_THINKING=off to disable reasoning where supported."""
+    model = model or os.environ.get("NEBIUS_MODEL")
+    if not model:
+        sys.exit("Set NEBIUS_MODEL first (run: python -m silicon_tech.llm models).")
+    extra = {}
+    if os.environ.get("NEBIUS_THINKING", "").lower() == "off":
+        extra["extra_body"] = {"chat_template_kwargs": {"enable_thinking": False}}
+    r = client().chat.completions.create(
+        model=model,
+        messages=[{"role": "system", "content": system},
+                  {"role": "user", "content": user}],
+        max_tokens=max_tokens,
+        temperature=temperature,
+        **extra,
+    )
+    choice = r.choices[0]
+    if not choice.message.content:
+        print(f"   [warn] empty reply, finish_reason={choice.finish_reason}")
+    return (choice.message.content or ""), r.usage

@@ -1,0 +1,26 @@
+
+== nvidia/Nemotron-3-Ultra-550b-a55b
+   case00-runaway_process         OK     5.8s
+   case01-healthy-glitch          OK    13.5s
+   case02-thermal-glitch          OK     4.9s
+   case03-memory_stall            OK     4.7s
+   case04-memory_stall            OK     4.8s
+   case05-benign                  OK     5.9s
+   case06-runaway_process         OK     4.4s
+   case07-memory_stall            OK     4.8s
+   case08-runaway_process         OK    13.7s
+   case09-benign                  OK     4.3s
+   case10-healthy-glitch          OK    15.3s
+   case11-benign                  OK     4.4s
+   case12-thermal-glitch          OK     4.6s
+   case13-benign                  OK     4.9s
+   case14-benign                  OK     3.7s
+   case15-memory_stall            OK    13.8s
+   case16-runaway_process         OK     3.9s
+   case17-irq_storm               OK     5.9s
+   case18-runaway_process         OK     5.3s
+   case19-benign                  OK     4.0s
+
+model                                         correct  median    max   tok in  tok out  err
+rules (no LLM)                                   6/20       -      -        0        0    0
+nvidia/Nemotron-3-Ultra-550b-a55b               20/20    4.9s  15.3s    30957    54150    0
