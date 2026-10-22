@@ -1,28 +1,23 @@
 """Live host collector: real CPU telemetry from this machine (Linux).
+Scheduler latency comes passively from /proc/schedstat (no probe overhead).
 Counters the host cannot provide are None."""
 import os
 import time
 import psutil
 
 
-def _wake_latency_us(core, samples=15, target_s=0.001):
-    """p90 of how late a 1 ms sleep wakes up while pinned to `core`
-    (a real scheduler-latency proxy)."""
+def read_schedstat():
+    """{cpu: (run_time_ns, run_delay_ns, timeslices)} from /proc/schedstat, or {}."""
+    out = {}
     try:
-        old = os.sched_getaffinity(0)
-        os.sched_setaffinity(0, {core})
-    except (AttributeError, OSError):
-        return None
-    try:
-        late = []
-        for _ in range(samples):
-            t0 = time.perf_counter()
-            time.sleep(target_s)
-            late.append(max(0.0, (time.perf_counter() - t0 - target_s) * 1e6))
-        late.sort()
-        return round(late[int(len(late) * 0.9)], 1)
-    finally:
-        os.sched_setaffinity(0, old)
+        with open("/proc/schedstat") as f:
+            for line in f:
+                if line.startswith("cpu"):
+                    p = line.split()
+                    out[int(p[0][3:])] = (int(p[-3]), int(p[-2]), int(p[-1]))
+    except (OSError, ValueError, IndexError):
+        pass
+    return out
 
 
 class LiveHost:
@@ -34,6 +29,7 @@ class LiveHost:
         psutil.cpu_percent(percpu=True)          # prime the counters
         self.prev = psutil.cpu_stats()
         self.prev_t = time.time()
+        self.prev_sched = read_schedstat()
         self.tick = 0
 
     def _temp(self):
@@ -44,6 +40,16 @@ class LiveHost:
         except (AttributeError, OSError):
             return None
 
+    def _sched_delay_us(self, cur, c):
+        """Average run-queue wait per scheduling slice since the last sample."""
+        a, b = self.prev_sched.get(c), cur.get(c)
+        if not a or not b:
+            return None
+        slices = b[2] - a[2]
+        if slices <= 0:
+            return 0.0
+        return round((b[1] - a[1]) / slices / 1000.0, 1)
+
     def step(self):
         util = psutil.cpu_percent(percpu=True)
         now = time.time()
@@ -52,6 +58,7 @@ class LiveHost:
         ctx = (st.ctx_switches - self.prev.ctx_switches) / dt
         irq = (st.interrupts - self.prev.interrupts) / dt
         self.prev, self.prev_t = st, now
+        cur = read_schedstat()
         try:
             freqs = psutil.cpu_freq(percpu=True) or []
         except (AttributeError, OSError, NotImplementedError):
@@ -64,8 +71,9 @@ class LiveHost:
                 "util": round(util[c], 1) if c < len(util) else None,
                 "freq_mhz": round(freqs[c].current) if c < len(freqs) else None,
                 "temp_c": temp,
-                "wake_latency_us": _wake_latency_us(c),
+                "wake_latency_us": self._sched_delay_us(cur, c),
             })
+        self.prev_sched = cur
         sample = {
             "tick": self.tick,
             "host": os.uname().nodename,
@@ -76,26 +84,3 @@ class LiveHost:
         }
         self.tick += 1
         return sample
-
-def _wake_latency_us(core, samples=3, spins=20000):
-    """p90 scheduling delay (wall time minus CPU time, in microseconds) of a fixed
-    compute probe pinned to `core`. Rises when other work competes for the core."""
-    try:
-        old = os.sched_getaffinity(0)
-        os.sched_setaffinity(0, {core})
-    except (AttributeError, OSError):
-        return None
-    try:
-        delays = []
-        for _ in range(samples):
-            w0, c0 = time.perf_counter(), time.process_time()
-            x = 0
-            for i in range(spins):
-                x += i
-            wall = time.perf_counter() - w0
-            cpu = time.process_time() - c0
-            delays.append(max(0.0, wall - cpu) * 1e6)
-        delays.sort()
-        return round(delays[int(len(delays) * 0.9)], 1)
-    finally:
-        os.sched_setaffinity(0, old)

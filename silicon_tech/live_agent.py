@@ -5,11 +5,11 @@ from silicon_tech.agent import parse
 
 SYSTEM_LIVE = """You are a senior data center technician diagnosing a live Linux server.
 You get a BASELINE (medians from a healthy period) and the CURRENT window medians.
-Per core: util % and scheduling delay (p90 microseconds that a fixed compute probe is held off the CPU when pinned to that core).
+Per core: util % and scheduling delay (average microseconds a runnable task waits in that core run queue per scheduling slice, from kernel scheduler statistics).
 System-wide: load average, context switches/s, interrupts/s. Missing counters show as n/a (no hardware counters here).
 Compare every core with its own baseline and with its peers.
 Fault signatures:
-- runaway_process: one core near 100% util while peers stay near baseline; its wake latency is far above baseline.
+- runaway_process: one core near 100% util while peers stay near baseline; its scheduling delay is far above baseline.
 - noisy_neighbor: several cores busy at once, load average well above baseline, many more context switches.
 - irq_storm: interrupts/s far above baseline.
 - healthy: everything within normal variation of the baseline.
@@ -42,7 +42,7 @@ def _fmt(v, unit=""):
 def describe(name, s):
     lines = [f"{name}: load {s['load1']}  ctx/s {s['ctx_per_s']:.0f}  irq/s {s['irq_per_s']:.0f}"]
     for c, d in s["cores"].items():
-        lines.append(f"  core {c}: util {_fmt(d['util'], '%')}  wake_latency {_fmt(d['wake_us'], 'us')}  "
+        lines.append(f"  core {c}: util {_fmt(d['util'], '%')}  sched_delay {_fmt(d['wake_us'], 'us')}  "
                      f"freq {_fmt(d['freq'], 'MHz')}  temp {_fmt(d['temp'], 'C')}")
     return "\n".join(lines)
 
