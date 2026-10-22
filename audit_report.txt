@@ -1,0 +1,52 @@
+== submission basics
+[PASS] file present: LICENSE
+[PASS] file present: README.md
+[PASS] file present: requirements.txt
+[PASS] file present: results_hard_v2.txt
+[FAIL] README length 27 chars (judges read it first; aim for 1500+)
+[FAIL] README mentions 'Nemotron'
+[PASS] README mentions 'Nebius'
+[FAIL] README mentions 'limitation'
+[FAIL] README mentions 'feedback'
+[PASS] no hard-coded secrets found
+== clean simulator
+[PASS] clean simulator: rules diagnosed 11/11 faulty nodes
+== real processor (no tokens)
+[PASS] /proc/schedstat readable on this host
+[PASS] gate stays closed on an idle host (0 tokens)
+[PASS] gate opens under a real CPU hog on core 0
+[PASS] real scheduler delay on core 0: idle 57.0 us -> hog 223.8 us
+[PASS] hogged core utilization 100.0%
+== held-out test
+   case00-runaway_process         OK     7.1s
+   case01-healthy-glitch          OK     9.3s
+   case02-thermal-glitch          OK     9.3s
+   case03-memory_stall            OK     9.4s
+   case04-memory_stall            MISS  10.5s
+   case05-benign                  OK     9.4s
+   case06-runaway_process         OK     5.1s
+   case07-memory_stall            OK     9.9s
+   case08-runaway_process         OK    18.9s
+   case09-benign                  OK    10.0s
+   case10-healthy-glitch          OK    21.6s
+   case11-benign                  OK     6.3s
+   case12-thermal-glitch          OK     9.1s
+   case13-benign                  OK    11.8s
+   case14-benign                  OK    13.0s
+   case15-memory_stall            MISS  14.7s
+   case16-runaway_process         OK    10.5s
+   case17-irq_storm               MISS  11.6s
+   case18-runaway_process         OK    10.1s
+   case19-benign                  OK     8.8s
+[INFO] held-out set: 20 unseen random cases (seed 777); rules got 6/20
+[PASS] Nemotron held-out accuracy 17/20 = 85% (target 80%+ and above rules)
+[INFO] time per diagnosis: median 9.9s, max 21.6s
+[INFO] tokens: 28388 in, 39671 out; fallbacks used: 0
+   MISS case04-memory_stall: truth={'memory_stall': [4, 7]} got={'memory_stall': [4]} via nemotron
+   MISS case15-memory_stall: truth={'memory_stall': [0, 6]} got={'memory_stall': [6]} via nemotron
+   MISS case17-irq_storm: truth={'irq_storm': [0]} got={'noisy_neighbor': [0]} via nemotron
+== failure test
+[PASS] bad model name degrades gracefully to rules: rules-fallback (NotFoundError)
+
+SUMMARY: 14 pass, 4 fail, 0 warn, 3 info
+NOT READY: fix the FAIL lines above
