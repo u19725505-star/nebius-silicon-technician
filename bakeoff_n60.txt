@@ -1,369 +1,141 @@
 
 == nvidia/Nemotron-3-Ultra-550b-a55b
-   error: AuthenticationError
-   case00-memory_stall            MISS   0.8s
-   error: AuthenticationError
-   case01-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case02-benign                  MISS   0.3s
-   error: AuthenticationError
-   case03-runaway_process         MISS   0.4s
-   error: AuthenticationError
-   case04-irq_storm               MISS   0.3s
-   error: AuthenticationError
-   case05-benign                  MISS   0.3s
-   error: AuthenticationError
-   case06-healthy-glitch          MISS   0.3s
-   error: AuthenticationError
-   case07-irq_storm               MISS   0.3s
-   error: AuthenticationError
-   case08-thermal-glitch          MISS   0.3s
-   error: AuthenticationError
-   case09-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case10-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case11-healthy-glitch          MISS   0.3s
-   error: AuthenticationError
-   case12-healthy-glitch          MISS   0.3s
-   error: AuthenticationError
-   case13-thermal-glitch          MISS   5.8s
-   error: AuthenticationError
-   case14-benign                  MISS   0.3s
-   error: AuthenticationError
-   case15-healthy-glitch          MISS   0.3s
-   error: AuthenticationError
-   case16-benign                  MISS   0.3s
-   error: AuthenticationError
-   case17-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case18-benign                  MISS   0.3s
-   error: AuthenticationError
-   case19-irq_storm               MISS   0.3s
-   error: AuthenticationError
-   case20-thermal-glitch          MISS   0.3s
-   error: AuthenticationError
-   case21-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case22-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case23-healthy-glitch          MISS   0.3s
-   error: AuthenticationError
-   case24-benign                  MISS   0.3s
-   error: AuthenticationError
-   case25-memory_stall            MISS   0.3s
-   error: AuthenticationError
-   case26-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case27-benign                  MISS   0.3s
-   error: AuthenticationError
-   case28-benign                  MISS   0.3s
-   error: AuthenticationError
-   case29-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case30-memory_stall            MISS   0.3s
-   error: AuthenticationError
-   case31-benign                  MISS   0.3s
-   error: AuthenticationError
-   case32-benign                  MISS   0.3s
-   error: AuthenticationError
-   case33-noisy_neighbor          MISS   0.3s
-   error: AuthenticationError
-   case34-thermal-glitch          MISS   0.3s
-   error: AuthenticationError
-   case35-noisy_neighbor          MISS   0.3s
-   error: AuthenticationError
-   case36-memory_stall            MISS   0.3s
-   error: AuthenticationError
-   case37-thermal-glitch          MISS   0.3s
-   error: AuthenticationError
-   case38-irq_storm               MISS   0.3s
-   error: AuthenticationError
-   case39-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case40-runaway_process         MISS   4.4s
-   error: AuthenticationError
-   case41-memory_stall            MISS   0.3s
-   error: AuthenticationError
-   case42-memory_stall            MISS   0.3s
-   error: AuthenticationError
-   case43-healthy-glitch          MISS   0.3s
-   error: AuthenticationError
-   case44-benign                  MISS   0.3s
-   error: AuthenticationError
-   case45-benign                  MISS   0.3s
-   error: AuthenticationError
-   case46-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case47-noisy_neighbor          MISS   0.3s
-   error: AuthenticationError
-   case48-healthy-glitch          MISS   0.3s
-   error: AuthenticationError
-   case49-irq_storm               MISS   0.3s
-   error: AuthenticationError
-   case50-irq_storm               MISS   0.3s
-   error: AuthenticationError
-   case51-thermal-glitch          MISS   0.3s
-   error: AuthenticationError
-   case52-noisy_neighbor          MISS   0.3s
-   error: AuthenticationError
-   case53-noisy_neighbor          MISS   0.3s
-   error: AuthenticationError
-   case54-benign                  MISS   0.3s
-   error: AuthenticationError
-   case55-noisy_neighbor          MISS   0.3s
-   error: AuthenticationError
-   case56-memory_stall            MISS   0.3s
-   error: AuthenticationError
-   case57-memory_stall            MISS   0.3s
-   error: AuthenticationError
-   case58-irq_storm               MISS   0.3s
-   error: AuthenticationError
-   case59-irq_storm               MISS   0.3s
+   case00-memory_stall            OK     3.4s
+   case01-runaway_process         OK    13.5s
+   case02-benign                  OK     8.2s
+   case03-runaway_process         OK     4.7s
+   case04-irq_storm               OK     4.9s
+   case05-benign                  OK     3.9s
+   case06-healthy-glitch          OK    16.8s
+   case07-irq_storm               OK     4.0s
+   case08-thermal-glitch          OK     5.2s
+   case09-runaway_process         OK     3.8s
+   case10-runaway_process         OK     5.5s
+   case11-healthy-glitch          OK     5.7s
+   case12-healthy-glitch          OK    12.9s
+   case13-thermal-glitch          OK     4.8s
+   case14-benign                  OK     4.3s
+   case15-healthy-glitch          MISS  17.1s
+   case16-benign                  OK     4.6s
+   case17-runaway_process         OK     6.7s
+   case18-benign                  OK     4.0s
+   case19-irq_storm               OK     3.2s
+   case20-thermal-glitch          OK     5.6s
+   case21-runaway_process         OK     4.3s
+   case22-runaway_process         OK     5.4s
+   case23-healthy-glitch          MISS  15.9s
+   case24-benign                  OK     4.7s
+   case25-memory_stall            OK     4.5s
+   case26-runaway_process         OK     3.3s
+   case27-benign                  OK     4.1s
+   case28-benign                  OK    13.6s
+   case29-runaway_process         OK    12.1s
+   case30-memory_stall            OK    11.0s
+   case31-benign                  OK     4.8s
+   case32-benign                  OK    10.8s
+   case33-noisy_neighbor          OK     4.1s
+   case34-thermal-glitch          OK     5.6s
+   case35-noisy_neighbor          OK     3.5s
+   case36-memory_stall            OK    11.9s
+   case37-thermal-glitch          OK     5.3s
+   case38-irq_storm               OK     3.8s
+   case39-runaway_process         OK    12.6s
+   case40-runaway_process         OK     4.6s
+   case41-memory_stall            OK    18.8s
+   case42-memory_stall            OK     5.3s
+   case43-healthy-glitch          OK    12.8s
+   case44-benign                  OK     5.6s
+   case45-benign                  MISS  19.9s
+   case46-runaway_process         OK     3.6s
+   case47-noisy_neighbor          OK     4.4s
+   case48-healthy-glitch          OK    12.0s
+   case49-irq_storm               OK     5.4s
+   case50-irq_storm               OK     4.0s
+   case51-thermal-glitch          OK     4.6s
+   case52-noisy_neighbor          OK     5.3s
+   case53-noisy_neighbor          OK     4.0s
+   case54-benign                  OK    11.0s
+   case55-noisy_neighbor          OK     4.1s
+   case56-memory_stall            OK     4.1s
+   case57-memory_stall            OK     5.4s
+   case58-irq_storm               OK    10.1s
+   case59-irq_storm               OK     6.0s
 
 == nvidia/nemotron-3-super-120b-a12b
-   error: AuthenticationError
-   case00-memory_stall            MISS   0.3s
-   error: AuthenticationError
-   case01-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case02-benign                  MISS   0.3s
-   error: AuthenticationError
-   case03-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case04-irq_storm               MISS   0.3s
-   error: AuthenticationError
-   case05-benign                  MISS   0.3s
-   error: AuthenticationError
-   case06-healthy-glitch          MISS   0.3s
-   error: AuthenticationError
-   case07-irq_storm               MISS   0.3s
-   error: AuthenticationError
-   case08-thermal-glitch          MISS   0.3s
-   error: AuthenticationError
-   case09-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case10-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case11-healthy-glitch          MISS   0.3s
-   error: AuthenticationError
-   case12-healthy-glitch          MISS   0.3s
-   error: AuthenticationError
-   case13-thermal-glitch          MISS   0.3s
-   error: AuthenticationError
-   case14-benign                  MISS   0.3s
-   error: AuthenticationError
-   case15-healthy-glitch          MISS   0.3s
-   error: AuthenticationError
-   case16-benign                  MISS   0.3s
-   error: AuthenticationError
-   case17-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case18-benign                  MISS   0.3s
-   error: AuthenticationError
-   case19-irq_storm               MISS   9.1s
-   error: AuthenticationError
-   case20-thermal-glitch          MISS   0.3s
-   error: AuthenticationError
-   case21-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case22-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case23-healthy-glitch          MISS   0.3s
-   error: AuthenticationError
-   case24-benign                  MISS   0.3s
-   error: AuthenticationError
-   case25-memory_stall            MISS   0.3s
-   error: AuthenticationError
-   case26-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case27-benign                  MISS   8.0s
-   error: AuthenticationError
-   case28-benign                  MISS   0.3s
-   error: AuthenticationError
-   case29-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case30-memory_stall            MISS   0.3s
-   error: AuthenticationError
-   case31-benign                  MISS   0.3s
-   error: AuthenticationError
-   case32-benign                  MISS   0.3s
-   error: AuthenticationError
-   case33-noisy_neighbor          MISS   0.3s
-   error: AuthenticationError
-   case34-thermal-glitch          MISS   0.3s
-   error: AuthenticationError
-   case35-noisy_neighbor          MISS   0.4s
-   error: AuthenticationError
-   case36-memory_stall            MISS   0.3s
-   error: AuthenticationError
-   case37-thermal-glitch          MISS   0.3s
-   error: AuthenticationError
-   case38-irq_storm               MISS   0.3s
-   error: AuthenticationError
-   case39-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case40-runaway_process         MISS   0.3s
-   error: AuthenticationError
-   case41-memory_stall            MISS   0.3s
-   error: AuthenticationError
-   case42-memory_stall            MISS   0.3s
-   error: AuthenticationError
-   case43-healthy-glitch          MISS   0.3s
-   error: AuthenticationError
-   case44-benign                  MISS   0.3s
-   error: AuthenticationError
-   case45-benign                  MISS   7.0s
-   error: AuthenticationError
-   case46-runaway_process         MISS   5.2s
-   error: AuthenticationError
-   case47-noisy_neighbor          MISS   0.3s
-   error: AuthenticationError
-   case48-healthy-glitch          MISS   0.3s
-   error: AuthenticationError
-   case49-irq_storm               MISS   0.3s
-   error: AuthenticationError
-   case50-irq_storm               MISS   0.3s
-   error: AuthenticationError
-   case51-thermal-glitch          MISS   0.3s
-   error: AuthenticationError
-   case52-noisy_neighbor          MISS   0.3s
-   error: AuthenticationError
-   case53-noisy_neighbor          MISS   0.3s
-   error: AuthenticationError
-   case54-benign                  MISS   0.3s
-   error: AuthenticationError
-   case55-noisy_neighbor          MISS   0.3s
-   error: AuthenticationError
-   case56-memory_stall            MISS   0.3s
-   error: AuthenticationError
-   case57-memory_stall            MISS   0.3s
-   error: AuthenticationError
-   case58-irq_storm               MISS   0.3s
-   error: AuthenticationError
-   case59-irq_storm               MISS   0.3s
+   case00-memory_stall            OK     9.7s
+   case01-runaway_process         OK    12.2s
+   case02-benign                  OK    10.9s
+   case03-runaway_process         OK     8.5s
+   case04-irq_storm               OK     8.7s
+   case05-benign                  OK     8.7s
+   [warn] empty reply, finish_reason=length
+   case06-healthy-glitch          MISS  24.2s
+   case07-irq_storm               OK     5.9s
+   case08-thermal-glitch          OK     9.5s
+   case09-runaway_process         OK     6.9s
+   case10-runaway_process         OK    16.5s
+   case11-healthy-glitch          OK     7.5s
+   case12-healthy-glitch          OK     8.8s
+   case13-thermal-glitch          OK     9.2s
+   case14-benign                  OK    20.2s
+   case15-healthy-glitch          MISS  15.7s
+   case16-benign                  MISS  12.2s
+   case17-runaway_process         OK    14.0s
+   case18-benign                  OK    18.4s
+   case19-irq_storm               OK    10.0s
+   case20-thermal-glitch          OK    24.2s
+   case21-runaway_process         OK     8.5s
+   case22-runaway_process         OK     6.6s
+   case23-healthy-glitch          MISS  15.0s
+   case24-benign                  OK    11.9s
+   case25-memory_stall            OK     7.9s
+   case26-runaway_process         OK     8.5s
+   case27-benign                  OK     5.9s
+   case28-benign                  OK    23.7s
+   case29-runaway_process         OK    14.8s
+   case30-memory_stall            OK     6.9s
+   case31-benign                  OK    12.5s
+   case32-benign                  OK     6.1s
+   case33-noisy_neighbor          OK    21.7s
+   case34-thermal-glitch          OK     8.9s
+   case35-noisy_neighbor          OK    12.7s
+   case36-memory_stall            OK    23.7s
+   case37-thermal-glitch          OK    12.0s
+   case38-irq_storm               OK     8.5s
+   case39-runaway_process         OK     7.3s
+   case40-runaway_process         OK    13.2s
+   case41-memory_stall            OK    12.2s
+   case42-memory_stall            OK    20.3s
+   case43-healthy-glitch          MISS  10.5s
+   case44-benign                  MISS   8.2s
+   case45-benign                  OK     6.2s
+   case46-runaway_process         OK    12.6s
+   case47-noisy_neighbor          OK     6.6s
+   case48-healthy-glitch          OK     9.1s
+   case49-irq_storm               OK     7.4s
+   case50-irq_storm               OK    10.8s
+   case51-thermal-glitch          MISS   9.0s
+   case52-noisy_neighbor          OK    10.7s
+   case53-noisy_neighbor          OK     7.8s
+   case54-benign                  OK    12.9s
+   case55-noisy_neighbor          OK     9.0s
+   [warn] empty reply, finish_reason=length
+   case56-memory_stall            OK    22.8s
+   case57-memory_stall            OK     8.2s
+   case58-irq_storm               OK    19.8s
+   case59-irq_storm               OK     7.6s
 
 model                                         correct  median    max   tok in  tok out  err
 rules (no LLM)                                  17/60       -      -        0        0    0
-nvidia/Nemotron-3-Ultra-550b-a55b                0/60    0.3s   5.8s        0        0   60
-nvidia/nemotron-3-super-120b-a12b                0/60    0.3s   9.1s        0        0   60
-MISS [Nemotron-3-Ultra-550b-a55b] case00-memory_stall: truth={'memory_stall': [6]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case01-runaway_process: truth={'runaway_process': [7]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case02-benign: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case03-runaway_process: truth={'runaway_process': [5]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case04-irq_storm: truth={'irq_storm': [1, 5]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case05-benign: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case06-healthy-glitch: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case07-irq_storm: truth={'irq_storm': [3, 7]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case08-thermal-glitch: truth={'thermal_throttle': [7]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case09-runaway_process: truth={'runaway_process': [6]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case10-runaway_process: truth={'runaway_process': [7]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case11-healthy-glitch: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case12-healthy-glitch: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case13-thermal-glitch: truth={'thermal_throttle': [1]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case14-benign: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case15-healthy-glitch: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case16-benign: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case17-runaway_process: truth={'runaway_process': [4]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case18-benign: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case19-irq_storm: truth={'irq_storm': [0]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case20-thermal-glitch: truth={'thermal_throttle': [7]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case21-runaway_process: truth={'runaway_process': [5]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case22-runaway_process: truth={'runaway_process': [7]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case23-healthy-glitch: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case24-benign: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case25-memory_stall: truth={'memory_stall': [3, 4]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case26-runaway_process: truth={'runaway_process': [7]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case27-benign: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case28-benign: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case29-runaway_process: truth={'runaway_process': [1]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case30-memory_stall: truth={'memory_stall': [4]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case31-benign: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case32-benign: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case33-noisy_neighbor: truth={'noisy_neighbor': [1, 3]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case34-thermal-glitch: truth={'thermal_throttle': [4]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case35-noisy_neighbor: truth={'noisy_neighbor': [6]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case36-memory_stall: truth={'memory_stall': [5]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case37-thermal-glitch: truth={'thermal_throttle': [0]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case38-irq_storm: truth={'irq_storm': [2, 7]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case39-runaway_process: truth={'runaway_process': [2]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case40-runaway_process: truth={'runaway_process': [5]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case41-memory_stall: truth={'memory_stall': [0, 1]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case42-memory_stall: truth={'memory_stall': [3, 7]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case43-healthy-glitch: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case44-benign: truth=none got=none
+nvidia/Nemotron-3-Ultra-550b-a55b               57/60    5.3s  19.9s    95465   166022    0
+nvidia/nemotron-3-super-120b-a12b               53/60    9.9s  24.2s    79992    98129    0
+MISS [Nemotron-3-Ultra-550b-a55b] case15-healthy-glitch: truth=none got={'irq_storm': [1]}
+MISS [Nemotron-3-Ultra-550b-a55b] case23-healthy-glitch: truth=none got={'irq_storm': [7]}
 MISS [Nemotron-3-Ultra-550b-a55b] case45-benign: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case46-runaway_process: truth={'runaway_process': [1]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case47-noisy_neighbor: truth={'noisy_neighbor': [3, 7]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case48-healthy-glitch: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case49-irq_storm: truth={'irq_storm': [0, 7]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case50-irq_storm: truth={'irq_storm': [3]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case51-thermal-glitch: truth={'thermal_throttle': [7]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case52-noisy_neighbor: truth={'noisy_neighbor': [5]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case53-noisy_neighbor: truth={'noisy_neighbor': [4]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case54-benign: truth=none got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case55-noisy_neighbor: truth={'noisy_neighbor': [4]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case56-memory_stall: truth={'memory_stall': [5]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case57-memory_stall: truth={'memory_stall': [4, 7]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case58-irq_storm: truth={'irq_storm': [4]} got=none
-MISS [Nemotron-3-Ultra-550b-a55b] case59-irq_storm: truth={'irq_storm': [0, 7]} got=none
-MISS [nemotron-3-super-120b-a12b] case00-memory_stall: truth={'memory_stall': [6]} got=none
-MISS [nemotron-3-super-120b-a12b] case01-runaway_process: truth={'runaway_process': [7]} got=none
-MISS [nemotron-3-super-120b-a12b] case02-benign: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case03-runaway_process: truth={'runaway_process': [5]} got=none
-MISS [nemotron-3-super-120b-a12b] case04-irq_storm: truth={'irq_storm': [1, 5]} got=none
-MISS [nemotron-3-super-120b-a12b] case05-benign: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case06-healthy-glitch: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case07-irq_storm: truth={'irq_storm': [3, 7]} got=none
-MISS [nemotron-3-super-120b-a12b] case08-thermal-glitch: truth={'thermal_throttle': [7]} got=none
-MISS [nemotron-3-super-120b-a12b] case09-runaway_process: truth={'runaway_process': [6]} got=none
-MISS [nemotron-3-super-120b-a12b] case10-runaway_process: truth={'runaway_process': [7]} got=none
-MISS [nemotron-3-super-120b-a12b] case11-healthy-glitch: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case12-healthy-glitch: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case13-thermal-glitch: truth={'thermal_throttle': [1]} got=none
-MISS [nemotron-3-super-120b-a12b] case14-benign: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case15-healthy-glitch: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case16-benign: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case17-runaway_process: truth={'runaway_process': [4]} got=none
-MISS [nemotron-3-super-120b-a12b] case18-benign: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case19-irq_storm: truth={'irq_storm': [0]} got=none
-MISS [nemotron-3-super-120b-a12b] case20-thermal-glitch: truth={'thermal_throttle': [7]} got=none
-MISS [nemotron-3-super-120b-a12b] case21-runaway_process: truth={'runaway_process': [5]} got=none
-MISS [nemotron-3-super-120b-a12b] case22-runaway_process: truth={'runaway_process': [7]} got=none
-MISS [nemotron-3-super-120b-a12b] case23-healthy-glitch: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case24-benign: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case25-memory_stall: truth={'memory_stall': [3, 4]} got=none
-MISS [nemotron-3-super-120b-a12b] case26-runaway_process: truth={'runaway_process': [7]} got=none
-MISS [nemotron-3-super-120b-a12b] case27-benign: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case28-benign: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case29-runaway_process: truth={'runaway_process': [1]} got=none
-MISS [nemotron-3-super-120b-a12b] case30-memory_stall: truth={'memory_stall': [4]} got=none
-MISS [nemotron-3-super-120b-a12b] case31-benign: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case32-benign: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case33-noisy_neighbor: truth={'noisy_neighbor': [1, 3]} got=none
-MISS [nemotron-3-super-120b-a12b] case34-thermal-glitch: truth={'thermal_throttle': [4]} got=none
-MISS [nemotron-3-super-120b-a12b] case35-noisy_neighbor: truth={'noisy_neighbor': [6]} got=none
-MISS [nemotron-3-super-120b-a12b] case36-memory_stall: truth={'memory_stall': [5]} got=none
-MISS [nemotron-3-super-120b-a12b] case37-thermal-glitch: truth={'thermal_throttle': [0]} got=none
-MISS [nemotron-3-super-120b-a12b] case38-irq_storm: truth={'irq_storm': [2, 7]} got=none
-MISS [nemotron-3-super-120b-a12b] case39-runaway_process: truth={'runaway_process': [2]} got=none
-MISS [nemotron-3-super-120b-a12b] case40-runaway_process: truth={'runaway_process': [5]} got=none
-MISS [nemotron-3-super-120b-a12b] case41-memory_stall: truth={'memory_stall': [0, 1]} got=none
-MISS [nemotron-3-super-120b-a12b] case42-memory_stall: truth={'memory_stall': [3, 7]} got=none
-MISS [nemotron-3-super-120b-a12b] case43-healthy-glitch: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case44-benign: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case45-benign: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case46-runaway_process: truth={'runaway_process': [1]} got=none
-MISS [nemotron-3-super-120b-a12b] case47-noisy_neighbor: truth={'noisy_neighbor': [3, 7]} got=none
-MISS [nemotron-3-super-120b-a12b] case48-healthy-glitch: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case49-irq_storm: truth={'irq_storm': [0, 7]} got=none
-MISS [nemotron-3-super-120b-a12b] case50-irq_storm: truth={'irq_storm': [3]} got=none
-MISS [nemotron-3-super-120b-a12b] case51-thermal-glitch: truth={'thermal_throttle': [7]} got=none
-MISS [nemotron-3-super-120b-a12b] case52-noisy_neighbor: truth={'noisy_neighbor': [5]} got=none
-MISS [nemotron-3-super-120b-a12b] case53-noisy_neighbor: truth={'noisy_neighbor': [4]} got=none
-MISS [nemotron-3-super-120b-a12b] case54-benign: truth=none got=none
-MISS [nemotron-3-super-120b-a12b] case55-noisy_neighbor: truth={'noisy_neighbor': [4]} got=none
-MISS [nemotron-3-super-120b-a12b] case56-memory_stall: truth={'memory_stall': [5]} got=none
-MISS [nemotron-3-super-120b-a12b] case57-memory_stall: truth={'memory_stall': [4, 7]} got=none
-MISS [nemotron-3-super-120b-a12b] case58-irq_storm: truth={'irq_storm': [4]} got=none
-MISS [nemotron-3-super-120b-a12b] case59-irq_storm: truth={'irq_storm': [0, 7]} got=none
+MISS [nemotron-3-super-120b-a12b] case06-healthy-glitch: truth=none got={'irq_storm': [4]}
+MISS [nemotron-3-super-120b-a12b] case15-healthy-glitch: truth=none got={'irq_storm': [1]}
+MISS [nemotron-3-super-120b-a12b] case16-benign: truth=none got={'irq_storm': [3]}
+MISS [nemotron-3-super-120b-a12b] case23-healthy-glitch: truth=none got={'irq_storm': [7]}
+MISS [nemotron-3-super-120b-a12b] case43-healthy-glitch: truth=none got={'noisy_neighbor': [4]}
+MISS [nemotron-3-super-120b-a12b] case44-benign: truth=none got={'irq_storm': [5]}
+MISS [nemotron-3-super-120b-a12b] case51-thermal-glitch: truth={'thermal_throttle': [7]} got={'noisy_neighbor': [6], 'thermal_throttle': [7]}
