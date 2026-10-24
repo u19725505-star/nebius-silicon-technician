@@ -1,0 +1,66 @@
+
+== nvidia/Nemotron-3-Ultra-550b-a55b
+   case00-benign                  OK     4.2s
+   case01-runaway_process         OK     4.6s
+   case02-memory_stall            OK    12.3s
+   case03-benign                  OK     5.1s
+   case04-runaway_process         OK     5.7s
+   case05-noisy_neighbor          OK     4.0s
+   case06-noisy_neighbor          OK    11.6s
+   case07-runaway_process         OK     5.8s
+   case08-benign                  OK    12.2s
+   case09-memory_stall            OK    13.2s
+   case10-memory_stall            OK    19.3s
+   case11-thermal-glitch          OK     5.5s
+   case12-healthy-glitch          OK     5.5s
+   case13-thermal-glitch          OK     5.2s
+   case14-memory_stall            OK    15.1s
+   case15-runaway_process         OK     5.8s
+   case16-noisy_neighbor          OK     4.3s
+   case17-runaway_process         OK     5.3s
+   case18-thermal-glitch          OK     5.5s
+   case19-runaway_process         OK     5.3s
+   case20-runaway_process         OK     3.7s
+   case21-benign                  OK     9.8s
+   case22-benign                  OK     4.7s
+   case23-benign                  OK     5.0s
+   case24-runaway_process         OK     4.4s
+   case25-memory_stall            OK    12.0s
+   case26-memory_stall            OK    11.4s
+   case27-runaway_process         OK     5.2s
+   case28-runaway_process         OK     5.6s
+   case29-irq_storm               OK     4.7s
+   case30-runaway_process         OK     5.1s
+   case31-healthy-glitch          OK    14.5s
+   case32-memory_stall            OK    11.6s
+   case33-noisy_neighbor          OK     4.7s
+   case34-noisy_neighbor          OK     5.1s
+   case35-memory_stall            OK    12.2s
+   case36-noisy_neighbor          OK     5.4s
+   case37-irq_storm               OK    13.9s
+   case38-thermal-glitch          OK     5.2s
+   case39-healthy-glitch          OK    14.6s
+   case40-thermal-glitch          OK     5.7s
+   case41-benign                  OK     3.2s
+   case42-benign                  OK     5.8s
+   case43-irq_storm               OK     4.9s
+   case44-benign                  OK     5.3s
+   case45-runaway_process         OK     4.9s
+   case46-memory_stall            OK     4.7s
+   case47-healthy-glitch          OK    13.9s
+   case48-benign                  OK     5.1s
+   case49-runaway_process         OK     4.9s
+   case50-benign                  OK     5.2s
+   case51-noisy_neighbor          OK     4.9s
+   case52-healthy-glitch          OK    10.6s
+   case53-noisy_neighbor          OK     5.7s
+   case54-benign                  OK     5.1s
+   case55-runaway_process         OK     4.1s
+   case56-noisy_neighbor          OK     5.5s
+   case57-benign                  OK     4.5s
+   case58-runaway_process         OK     5.9s
+   case59-benign                  OK     6.1s
+
+model                                         correct  median    max   tok in  tok out  err
+rules (no LLM)                                  20/60       -      -        0        0    0
+nvidia/Nemotron-3-Ultra-550b-a55b               60/60    5.4s  19.3s   101224   180387    0
