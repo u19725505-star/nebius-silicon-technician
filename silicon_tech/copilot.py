@@ -30,7 +30,7 @@ SYSTEM = """You are a rack-side data center technician co-pilot. You are given:
 (2) host CPU readings measured on the server itself: baseline and current, per core utilization and scheduler delay;
 (3) maintenance notes.
 Pick exactly one root cause from: healthy, fan_failure, psu_degraded, inlet_hot, scheduled_maintenance, host_cpu_starvation.
-Rules: use only numbers that appear in the data and never compute new numbers. Work that the maintenance notes say is scheduled is not a fault. host_cpu_starvation means the BMC looks fine but a host core is saturated with scheduler delay far above its baseline. If unsure, say so with low confidence.
+Rules: use only numbers that appear in the data and never compute new numbers. Work that the maintenance notes say is scheduled is not a fault: if a note describes a running job that explains unusual readings, answer scheduled_maintenance, not healthy. host_cpu_starvation means the BMC looks fine but a host core is saturated with scheduler delay far above its baseline. If unsure, say so with low confidence.
 Allowed actions: none, locate_led (lights the locate LED so a technician can find the rack; safe), request_reset (asks a human to approve a reset; you never do it yourself).
 List 1 to 3 physical checks a technician should do. Reply with ONLY JSON:
 {"root_cause": "...", "evidence": ["short quote with numbers from the data"], "physical_checks": ["..."], "action": "none|locate_led|request_reset", "action_reason": "...", "confidence": "low|medium|high"}"""
@@ -46,6 +46,7 @@ def bmc_text(s):
         lines.append(f"{n}: {p['watts']} W, {p['health']}")
     lines.append(f"power redundancy: {s['redundancy']}")
     lines += [f"log {sev}: {msg}" for sev, msg in s["log"]]
+    lines.append("code-checked anomalies: " + ("; ".join(s["anomalies"]) or "none"))
     return "\n".join(lines)
 
 
@@ -161,6 +162,8 @@ def main():
             print("   check   :", c)
         print(f"   guardrails: numbers grounded={g_ok}{'' if g_ok else ' ' + str(bad)}  "
               f"corroborated by data={c_ok}")
+        if not (g_ok and c_ok):
+            print("   FLAG: answer not confirmed by code checks; needs human review")
         if action == "locate_led" and auto:
             _req(base, "/redfish/v1/Systems/1", {"LocationIndicatorActive": True}, "PATCH")
             print("   action  : locate_led EXECUTED (safe action, all guardrails passed)")

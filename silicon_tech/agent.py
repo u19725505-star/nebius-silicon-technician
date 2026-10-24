@@ -15,7 +15,7 @@ Fault signatures (they can be mild or partial):
 - memory_stall: busy core with VERY low IPC (below ~1.0) and a high cache-miss rate (above ~15%) but NORMAL context switches and run queue.
 Rules: ignore physically implausible sensor glitches (for example a 0C temperature reading) when the
 window medians look normal. FIRST read the maintenance context: if a scheduled job is named for a core and that core shows the load that job would cause (for example one pinned core at ~100% util), that core is NOT faulty, so leave it out of faults entirely.
-Report ONE fault per core (the single best explanation); never list a core under two faults.
+Normal variation: per-core interrupt and context-switch counts within about 40% of the other cores are normal noise, not a fault; an irq_storm means tens of thousands of interrupts per second. Report ONE fault per core (the single best explanation); never list a core under two faults.
 Reply with ONLY a JSON object:
 {"faults": {"fault_name": [core numbers]}, "summary": "one sentence", "action": "one sentence"}
 Use {} for faults if the processor is healthy."""
