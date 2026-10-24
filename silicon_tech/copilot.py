@@ -12,7 +12,7 @@ from silicon_tech.agent import parse
 from silicon_tech.redfish_sim import SCENARIOS, _start, _req, snapshot
 from silicon_tech.collector import LiveHost
 from silicon_tech.live_agent import summarize, describe, gate
-from silicon_tech.live_demo import hog, collect
+from silicon_tech.live_demo import hog, hog2, collect
 
 CAUSES = ["healthy", "fan_failure", "psu_degraded", "inlet_hot",
           "scheduled_maintenance", "host_cpu_starvation"]
@@ -121,17 +121,21 @@ def main():
     correct = tin_all = tout_all = 0
     for name in SCENARIOS:
         _req(base, "/emulator/scenario", {"name": name}, "POST")
-        proc = None
+        procs = []
         if name == "cpu_starvation":
-            proc = mp.get_context("fork").Process(target=hog, args=(host.cores[0],), daemon=True)
-            proc.start()
+            # two CPU-bound tasks pinned to one core: a stand-in for the serving engine's
+            # CPU thread competing with a noisy process, so runnable work has to wait
+            for _ in range(2):
+                pr = mp.get_context("fork").Process(target=hog, args=(host.cores[0],), daemon=True)
+                pr.start()
+                procs.append(pr)
             time.sleep(3)
         else:
             time.sleep(5)
         now_w = collect(host, 3)
-        if proc:
-            proc.terminate()
-            proc.join(timeout=2)
+        for pr in procs:
+            pr.terminate()
+            pr.join(timeout=2)
         snap = snapshot(base)
         maint = MAINT.get(name, DEFAULT_MAINT)
         bs, ns = summarize(base_w), summarize(now_w)

@@ -1,0 +1,76 @@
+BMC is EMULATED. Host CPU readings below are REAL, from this machine.
+Collecting host baseline (about 8 s)...
+
+== healthy   (injected: healthy)
+   model: Nemotron-3-Ultra-550b-a55b   root cause: healthy   confidence: high
+   evidence: CPU Temp: 57.4C, headroom to critical 37.6C, OK
+   evidence: GPU Temp: 61.0C, headroom to critical 34.0C, OK
+   evidence: Inlet Temp: 24.0C, headroom to critical 18.0C, OK
+   evidence: Fan 1: 9103 RPM, OK; Fan 2: 9115 RPM, OK; Fan 3: 9005 RPM, OK; Fan 4: 8938 RPM, OK; Fan 5: 8912 RPM, OK; Fan 6: 9002 RPM, OK
+   check   : Visually confirm all fan LEDs indicate normal operation
+   check   : Verify inlet air temperature with a handheld thermometer at rack front
+   check   : Check PSU status LEDs for any amber/fault indicators
+   guardrails: numbers grounded=True  corroborated by data=True
+   action  : none
+
+== fan_failure   (injected: fan_failure)
+   model: Nemotron-3-Ultra-550b-a55b   root cause: fan_failure   confidence: high
+   evidence: Fan 3: 0 RPM, Critical
+   evidence: log Critical: Fan 3 speed below lower critical threshold
+   evidence: CPU Temp: 88.6C, headroom to critical 6.4C, Warning
+   check   : Visually inspect Fan 3 for physical damage or obstruction
+   check   : Check Fan 3 power cable connection and seating
+   check   : Listen for abnormal noise from Fan 3 area
+   guardrails: numbers grounded=True  corroborated by data=True
+   action  : locate_led EXECUTED (safe action, all guardrails passed)
+
+== psu_degraded   (injected: psu_degraded)
+   model: Nemotron-3-Ultra-550b-a55b   root cause: psu_degraded   confidence: high
+   evidence: PSU 2: 0 W, Critical
+   evidence: log Warning: Power supply 2 output degraded; redundancy lost
+   evidence: power redundancy: Warning
+   check   : Verify PSU 2 physical presence and LED status
+   check   : Check PSU 2 power cable connections and AC input
+   check   : Confirm PSU 1 is carrying full load (1397 W) without overheating
+   guardrails: numbers grounded=True  corroborated by data=True
+   action  : locate_led EXECUTED (safe action, all guardrails passed)
+
+== inlet_hot   (injected: inlet_hot)
+   model: Nemotron-3-Ultra-550b-a55b   root cause: inlet_hot   confidence: high
+   evidence: Inlet Temp: 38.2C, headroom to critical 3.8C, Warning
+   evidence: log Warning: Inlet temperature above upper non-critical threshold
+   evidence: Fan 1-6: all OK at ~12500 RPM
+   evidence: PSU 1: 704 W, PSU 2: 704 W, both OK
+   check   : Measure rack inlet air temperature with handheld probe
+   check   : Verify CRAC/room cooling setpoints and airflow at floor tiles
+   check   : Inspect for blocked inlet vents or recirculation at rack front
+   guardrails: numbers grounded=True  corroborated by data=True
+   action  : locate_led EXECUTED (safe action, all guardrails passed)
+
+== planned_fan_test   (injected: scheduled_maintenance)
+   model: Nemotron-3-Ultra-550b-a55b   root cause: scheduled_maintenance   confidence: high
+   evidence: MAINTENANCE: Scheduled: fan diagnostic job running on this node (high fan speeds are expected).
+   evidence: log OK: Scheduled fan diagnostic started by maintenance job
+   evidence: code-checked anomalies: Fan 1 at 15100 RPM (unusually high); Fan 2 at 14979 RPM (unusually high); Fan 3 at 14965 RPM (unusually high); Fan 4 at 15092 RPM (unusually high); Fan 5 at 14956 RPM (unusually high); Fan 6 at 15109 RPM (unusually high)
+   check   : Confirm fan diagnostic job is still running via maintenance schedule
+   check   : Verify fan speeds return to normal range after diagnostic completes
+   check   : Check that all temperatures remain within headroom during high fan operation
+   guardrails: numbers grounded=True  corroborated by data=True
+   action  : none
+
+== cpu_starvation   (injected: host_cpu_starvation)
+   model: Nemotron-3-Ultra-550b-a55b   root cause: healthy   confidence: medium
+   evidence: BMC overall health OK, all temperatures with ample headroom (CPU 58.5C/36.5C, GPU 61.3C/33.7C, Inlet 24.4C/17.6C)
+   evidence: All 6 fans operating ~9000 RPM OK, both PSUs 705W OK, power redundancy OK
+   evidence: Host core 0 at 100% util but scheduler delay only 16.7us vs 9.6us baseline (not far above); core 1 delay 70.9us vs 22.7us but only 8.2% util
+   evidence: Maintenance notes: No maintenance scheduled
+   check   : Verify the 100% core 0 utilization matches expected workload (check for runaway process)
+   check   : Confirm no thermal throttling by checking CPU frequency stable at 3242MHz
+   check   : Ensure no hidden hardware alerts via physical LED inspection
+   guardrails: numbers grounded=True  corroborated by data=False
+   FLAG: answer not confirmed by code checks; needs human review
+   action  : none
+
+root cause matched the injected scenario in 5/6 runs
+tokens: 4706 in, 6902 out
+audit log of actions taken: [{'time': '16:49:08', 'action': 'LocateLED', 'body': {'LocationIndicatorActive': True}}, {'time': '16:49:19', 'action': 'LocateLED', 'body': {'LocationIndicatorActive': True}}, {'time': '16:49:32', 'action': 'LocateLED', 'body': {'LocationIndicatorActive': True}}]

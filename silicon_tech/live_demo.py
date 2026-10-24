@@ -59,3 +59,20 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+def hog2(core):
+    """Two CPU-bound tasks sharing one core: a stand-in for a serving engine's
+    CPU thread competing with a noisy process, so runnable work has to wait."""
+    import signal
+    import multiprocessing as _mp
+    os.sched_setaffinity(0, {core})
+    child = _mp.get_context("fork").Process(target=hog, args=(core,), daemon=True)
+    child.start()
+
+    def _stop(*_):
+        child.terminate()
+        os._exit(0)
+
+    signal.signal(signal.SIGTERM, _stop)
+    while True:
+        pass

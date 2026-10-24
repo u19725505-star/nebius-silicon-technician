@@ -4,12 +4,12 @@ Collecting host baseline (about 8 s)...
 == healthy   (injected: healthy)
    model: Nemotron-3-Ultra-550b-a55b   root cause: healthy   confidence: high
    evidence: CPU Temp: 57.4C, headroom to critical 37.6C, OK
-   evidence: GPU Temp: 61.0C, headroom to critical 34.0C, OK
    evidence: Inlet Temp: 24.0C, headroom to critical 18.0C, OK
-   evidence: Fan 1: 9103 RPM, OK; Fan 2: 9115 RPM, OK; Fan 3: 9005 RPM, OK; Fan 4: 8938 RPM, OK; Fan 5: 8912 RPM, OK; Fan 6: 9002 RPM, OK
-   check   : Visually confirm all fan LEDs indicate normal operation
-   check   : Verify inlet air temperature with a handheld thermometer at rack front
-   check   : Check PSU status LEDs for any amber/fault indicators
+   evidence: Fan 1: 9103 RPM, OK
+   evidence: PSU 1: 699 W, OK
+   check   : Verify fan speeds at front panel match BMC readings
+   check   : Confirm inlet air temperature at rack intake
+   check   : Check PSU status LEDs for green indication
    guardrails: numbers grounded=True  corroborated by data=True
    action  : none
 
@@ -18,9 +18,9 @@ Collecting host baseline (about 8 s)...
    evidence: Fan 3: 0 RPM, Critical
    evidence: log Critical: Fan 3 speed below lower critical threshold
    evidence: CPU Temp: 88.6C, headroom to critical 6.4C, Warning
-   check   : Visually inspect Fan 3 for physical damage or obstruction
-   check   : Check Fan 3 power cable connection and seating
-   check   : Listen for abnormal noise from Fan 3 area
+   check   : Visually inspect Fan 3 for obstruction or damage
+   check   : Check Fan 3 power connector and cable
+   check   : Verify Fan 3 spins freely by hand (power off)
    guardrails: numbers grounded=True  corroborated by data=True
    action  : locate_led EXECUTED (safe action, all guardrails passed)
 
@@ -29,9 +29,9 @@ Collecting host baseline (about 8 s)...
    evidence: PSU 2: 0 W, Critical
    evidence: log Warning: Power supply 2 output degraded; redundancy lost
    evidence: power redundancy: Warning
-   check   : Verify PSU 2 physical presence and LED status
-   check   : Check PSU 2 power cable connections and AC input
-   check   : Confirm PSU 1 is carrying full load (1397 W) without overheating
+   check   : Inspect PSU 2 status LEDs and physical connection
+   check   : Verify PSU 2 power cable seating and AC input
+   check   : Check if PSU 2 requires replacement or reseating
    guardrails: numbers grounded=True  corroborated by data=True
    action  : locate_led EXECUTED (safe action, all guardrails passed)
 
@@ -39,38 +39,36 @@ Collecting host baseline (about 8 s)...
    model: Nemotron-3-Ultra-550b-a55b   root cause: inlet_hot   confidence: high
    evidence: Inlet Temp: 38.2C, headroom to critical 3.8C, Warning
    evidence: log Warning: Inlet temperature above upper non-critical threshold
-   evidence: Fan 1-6: all OK at ~12500 RPM
-   evidence: PSU 1: 704 W, PSU 2: 704 W, both OK
-   check   : Measure rack inlet air temperature with handheld probe
-   check   : Verify CRAC/room cooling setpoints and airflow at floor tiles
-   check   : Inspect for blocked inlet vents or recirculation at rack front
+   check   : Measure inlet air temperature at rack front
+   check   : Verify CRAC unit operation and setpoints
+   check   : Check for airflow obstructions at rack inlet
    guardrails: numbers grounded=True  corroborated by data=True
-   action  : locate_led EXECUTED (safe action, all guardrails passed)
+   action  : none
 
 == planned_fan_test   (injected: scheduled_maintenance)
    model: Nemotron-3-Ultra-550b-a55b   root cause: scheduled_maintenance   confidence: high
-   evidence: MAINTENANCE: Scheduled: fan diagnostic job running on this node (high fan speeds are expected).
-   evidence: log OK: Scheduled fan diagnostic started by maintenance job
-   evidence: code-checked anomalies: Fan 1 at 15100 RPM (unusually high); Fan 2 at 14979 RPM (unusually high); Fan 3 at 14965 RPM (unusually high); Fan 4 at 15092 RPM (unusually high); Fan 5 at 14956 RPM (unusually high); Fan 6 at 15109 RPM (unusually high)
-   check   : Confirm fan diagnostic job is still running via maintenance schedule
-   check   : Verify fan speeds return to normal range after diagnostic completes
-   check   : Check that all temperatures remain within headroom during high fan operation
+   evidence: Maintenance note: 'Scheduled: fan diagnostic job running on this node (high fan speeds are expected).'
+   evidence: Event log: 'Scheduled fan diagnostic started by maintenance job'
+   evidence: Fan 1: 15100 RPM (unusually high); Fan 2: 14979 RPM (unusually high); Fan 3: 14965 RPM (unusually high); Fan 4: 15092 RPM (unusually high); Fan 5: 14956 RPM (unusually high); Fan 6: 15109 RPM (unusually high)
+   evidence: All temperatures OK with headroom: CPU 57.6C (37.4C headroom), GPU 62.9C (32.1C headroom), Inlet 24.2C (17.8C headroom)
+   check   : Verify fan diagnostic job is still running and will complete normally
+   check   : Confirm fans return to normal speeds after diagnostic completes
+   check   : Check that no other alerts appear during the diagnostic
    guardrails: numbers grounded=True  corroborated by data=True
    action  : none
 
 == cpu_starvation   (injected: host_cpu_starvation)
-   model: Nemotron-3-Ultra-550b-a55b   root cause: healthy   confidence: medium
-   evidence: BMC overall health OK, all temperatures with ample headroom (CPU 58.5C/36.5C, GPU 61.3C/33.7C, Inlet 24.4C/17.6C)
-   evidence: All 6 fans operating ~9000 RPM OK, both PSUs 705W OK, power redundancy OK
-   evidence: Host core 0 at 100% util but scheduler delay only 16.7us vs 9.6us baseline (not far above); core 1 delay 70.9us vs 22.7us but only 8.2% util
-   evidence: Maintenance notes: No maintenance scheduled
-   check   : Verify the 100% core 0 utilization matches expected workload (check for runaway process)
-   check   : Confirm no thermal throttling by checking CPU frequency stable at 3242MHz
-   check   : Ensure no hidden hardware alerts via physical LED inspection
-   guardrails: numbers grounded=True  corroborated by data=False
+   model: Nemotron-3-Ultra-550b-a55b   root cause: host_cpu_starvation   confidence: high
+   evidence: BMC shows all temperatures OK with headroom: CPU 58.5C (36.5C headroom), GPU 61.3C (33.7C), Inlet 24.4C (17.6C); fans ~9000 RPM; PSUs 705W each
+   evidence: Host core 0: util 100.0%, sched_delay 1716.4us vs baseline util 9.1%, sched_delay 43.1us (40x delay increase)
+   evidence: Maintenance notes: No maintenance scheduled on this node
+   check   : Check host console for runaway process pinning core 0
+   check   : Verify no stuck hardware interrupts via host dmesg or /proc/interrupts
+   check   : Confirm workload spike is expected for this node
+   guardrails: numbers grounded=False ['40']  corroborated by data=True
    FLAG: answer not confirmed by code checks; needs human review
    action  : none
 
-root cause matched the injected scenario in 5/6 runs
-tokens: 4706 in, 6902 out
-audit log of actions taken: [{'time': '16:49:08', 'action': 'LocateLED', 'body': {'LocationIndicatorActive': True}}, {'time': '16:49:19', 'action': 'LocateLED', 'body': {'LocationIndicatorActive': True}}, {'time': '16:49:32', 'action': 'LocateLED', 'body': {'LocationIndicatorActive': True}}]
+root cause matched the injected scenario in 6/6 runs
+tokens: 4734 in, 6084 out
+audit log of actions taken: [{'time': '21:54:55', 'action': 'LocateLED', 'body': {'LocationIndicatorActive': True}}, {'time': '21:55:07', 'action': 'LocateLED', 'body': {'LocationIndicatorActive': True}}]
