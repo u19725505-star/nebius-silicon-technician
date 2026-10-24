@@ -7,7 +7,7 @@ BASE_URL = "https://api.tokenfactory.nebius.com/v1/"
 
 
 def client():
-    key = os.environ.get("NEBIUS_API_KEY")
+    key = "".join((os.environ.get("NEBIUS_API_KEY") or "").split())
     if not key:
         sys.exit("Set NEBIUS_API_KEY first (see README).")
     return OpenAI(base_url=BASE_URL, api_key=key)
