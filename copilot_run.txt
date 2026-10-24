@@ -1,0 +1,72 @@
+BMC is EMULATED. Host CPU readings below are REAL, from this machine.
+Collecting host baseline (about 8 s)...
+
+== healthy   (injected: healthy)
+   model: Nemotron-3-Ultra-550b-a55b   root cause: healthy   confidence: high
+   evidence: overall health OK, consumed 1396 W
+   evidence: CPU Temp: 58.4C, headroom to critical 36.6C, OK
+   evidence: Inlet Temp: 23.8C, headroom to critical 18.2C, OK
+   evidence: Fan 1: 9098 RPM, OK; Fan 2: 9015 RPM, OK; Fan 3: 9072 RPM, OK; Fan 4: 8970 RPM, OK; Fan 5: 9017 RPM, OK; Fan 6: 9081 RPM, OK
+   check   : Visually confirm all fan LEDs indicate normal operation
+   check   : Verify inlet air temperature at rack front with handheld thermometer
+   check   : Check PSU status LEDs show green on both units
+   guardrails: numbers grounded=True  corroborated by data=True
+   action  : none
+
+== fan_failure   (injected: fan_failure)
+   model: Nemotron-3-Ultra-550b-a55b   root cause: fan_failure   confidence: high
+   evidence: Fan 3: 0 RPM, Critical
+   evidence: log Critical: Fan 3 speed below lower critical threshold
+   check   : Visually inspect Fan 3 for obstruction or damage
+   check   : Check Fan 3 power cable connection
+   check   : Verify Fan 3 spins freely by hand (power off)
+   guardrails: numbers grounded=True  corroborated by data=True
+   action  : locate_led EXECUTED (safe action, all guardrails passed)
+
+== psu_degraded   (injected: psu_degraded)
+   model: Nemotron-3-Ultra-550b-a55b   root cause: psu_degraded   confidence: high
+   evidence: PSU 2: 0 W, Critical
+   evidence: log Warning: Power supply 2 output degraded; redundancy lost
+   evidence: power redundancy: Warning
+   check   : Inspect PSU 2 status LED and seating
+   check   : Verify power cable connections to PSU 2
+   check   : Check if PSU 2 requires replacement
+   guardrails: numbers grounded=True  corroborated by data=True
+   action  : locate_led EXECUTED (safe action, all guardrails passed)
+
+== inlet_hot   (injected: inlet_hot)
+   model: Nemotron-3-Ultra-550b-a55b   root cause: inlet_hot   confidence: high
+   evidence: Inlet Temp: 37.7C, headroom to critical 4.3C, Warning
+   evidence: log Warning: Inlet temperature above upper non-critical threshold
+   check   : Check room/rack inlet air temperature and airflow at server front
+   check   : Verify CRAC/CRAH cooling units are operating normally
+   check   : Inspect for blocked air filters or obstructions at server inlet vents
+   guardrails: numbers grounded=True  corroborated by data=True
+   action  : locate_led EXECUTED (safe action, all guardrails passed)
+
+== planned_fan_test   (injected: scheduled_maintenance)
+   model: Nemotron-3-Ultra-550b-a55b   root cause: healthy   confidence: high
+   evidence: overall health OK, consumed 1407 W
+   evidence: CPU Temp: 59.1C, headroom to critical 35.9C, OK
+   evidence: Inlet Temp: 23.9C, headroom to critical 18.1C, OK
+   evidence: Fan 1: 14966 RPM, OK
+   check   : Verify fan diagnostic job completes and fan speeds return to baseline
+   check   : Confirm inlet temperature remains below 30C
+   check   : Check PSU power sharing remains balanced
+   guardrails: numbers grounded=True  corroborated by data=False
+   action  : none
+
+== cpu_starvation   (injected: host_cpu_starvation)
+   model: Nemotron-3-Ultra-550b-a55b   root cause: host_cpu_starvation   confidence: high
+   evidence: CPU Temp: 58.6C, headroom to critical 36.4C, OK
+   evidence: core 0: util 100.0% sched_delay 120.2us
+   evidence: core 0: util 13.2% sched_delay 8.8us
+   check   : Run top/htop on host to identify process pinning core 0
+   check   : Check for stuck/kernel threads or runaway userspace process
+   check   : Verify CPU frequency scaling and C-states via cpupower or turbostat
+   guardrails: numbers grounded=True  corroborated by data=True
+   action  : none
+
+root cause matched the injected scenario in 5/6 runs
+tokens: 4373 in, 7018 out
+audit log of actions taken: [{'time': '07:42:31', 'action': 'LocateLED', 'body': {'LocationIndicatorActive': True}}, {'time': '07:42:42', 'action': 'LocateLED', 'body': {'LocationIndicatorActive': True}}, {'time': '07:42:53', 'action': 'LocateLED', 'body': {'LocationIndicatorActive': True}}]
