@@ -149,11 +149,12 @@ function runMission(){
 function recorded(){const d=cases[selected];$('diagnosis').textContent='RECORDED ADVISORY · NO MODEL CALL\n\n'+d.severity+': '+d.summary+'\n\nEvidence: CPU '+d.cpu+' °C; inlet '+d.inlet+' °C; fan '+d.fan+' RPM; PSU '+d.psu+' W.\n\nRecommended next step: '+d.action+'\n\nThis is a local example advisory, not a model-generated answer. Human review required; no hardware action executed.';$('modelStatus').textContent='Recorded advisory. No network request made; Token Factory usage: 0.'}
 async function live(){
  const d=cases[selected];
+ if(!missionDone||visionFindings.length!==3){alert('Run the complete three-rack inspection first so Nemotron receives the vision findings.');return}
  if(!confirm('Run a live Nemotron diagnosis using simulated telemetry? This sends one request to the configured backend and may consume Token Factory credits. Continue?'))return;
  $('liveBtn').disabled=true;$('modelStatus').textContent='Sending one explicitly requested inference request…';$('diagnosis').textContent='Waiting for the configured diagnosis API. No hardware action can be executed.';
  try{
   const res=await fetch('https://silicon-technician-judge-api.onrender.com/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scenario:d.scenario,scenario_name:d.name,source:d.source,vision_findings:visionFindings,robot_mission_complete:missionDone,telemetry:{cpu_c:d.cpu,thermal_headroom_c:Math.max(0,100-d.cpu),inlet_c:d.inlet,fan1_rpm:d.fan,psu_output_w:d.psu}})});
-  const body=await res.json();$('diagnosis').textContent=JSON.stringify(body,null,2);$('modelStatus').textContent=res.ok?'Live API response received. Inspect model output and guardrails; no hardware action executed.':'Live inference failed (HTTP '+res.status+'). No automatic retry was made.';
+  const body=await res.json();$('diagnosis').textContent=JSON.stringify(body,null,2);$('modelStatus').textContent=res.ok?'Live API response received. Nemotron reviewed the submitted rack scan summaries; no hardware action executed.':'Live inference failed (HTTP '+res.status+'). No automatic retry was made.';if(res.ok&&body&&body.diagnosis){speak('Nemotron diagnosis. '+String(body.diagnosis).slice(0,450)+'. Recommended action: '+String(body.recommended_action||'review the evidence with a human technician').slice(0,300)+'. No hardware action was executed.');}
  }catch(e){$('modelStatus').textContent='Request failed or backend unavailable. No automatic retry was made.';$('diagnosis').textContent='LIVE INFERENCE UNAVAILABLE\n\n'+String(e)+'\n\nUse the recorded advisory to continue the demo. No automatic retry was made.'}
  finally{$('liveBtn').disabled=false}
 }
