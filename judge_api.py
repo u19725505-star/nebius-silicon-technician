@@ -69,7 +69,7 @@ def diagnose():
                 return jsonify({"error":"Invalid vision telemetry: "+key}),400
             clean_tele[key] = val
         vision.append({"rack":item["rack"],"visual_fault_marker_detected":detected,"red_pixel_count":pixel_count,"scenario_sensor_anomaly":str(item.get("scenario_sensor_anomaly","unknown"))[:60],"telemetry":clean_tele})
-    system = """You are Nemotron acting as a cautious data-center technician. Diagnose only from the supplied simulated scenario, measurements, and bounded computer-vision scan summaries. Distinguish observed evidence from inference. A red-pixel count is a visual heuristic, not proof of a real physical fault. Never claim to have accessed real hardware or taken an action. Return concise JSON with keys: severity (INFO/WARNING/CRITICAL), diagnosis, evidence (array of exact measurements or context facts), recommended_action, human_review_required (boolean), unsupported_claims (array). Be conservative; no invented readings, no false claims of execution."""
+    system = """You are Nemotron acting as a cautious data-center technician. Diagnose only from the supplied simulated scenario, measurements, and bounded computer-vision scan summaries. Distinguish observed evidence from inference. A red-pixel count is a visual heuristic, not proof of a real physical fault. Never claim to have accessed real hardware or taken an action. Return concise JSON with keys: severity (INFO/WARNING/CRITICAL), diagnosis, evidence (array of exact measurements or context facts), recommended_action, action_code (one of "restore_fan", "improve_airflow", "inspect_psu", "no_action", "review_only"), human_review_required (boolean), unsupported_claims (array). Select an action_code only when supported by supplied telemetry; otherwise choose "review_only". Be conservative; no invented readings, no false claims of execution."""
     user = "Scenario: "+name+"\nEvidence source: "+context+"\nSelected scenario measurements (units in keys): "+json.dumps(clean,separators=(",",":"))+"\nComputer-vision rack scan summaries: "+json.dumps(vision,separators=(",",":"))+"\nThese are synthetic browser-simulation observations, not physical camera data. Interpret the visual scan cautiously. Respond with valid JSON only. Do not treat values as live hardware telemetry."
     started = time.time()
     requests_seen += 1
@@ -86,6 +86,19 @@ def diagnose():
         evidence_ok = bool(parsed and isinstance(parsed.get("diagnosis"),str) and isinstance(parsed.get("evidence"),list))
         if not evidence_ok:
             return jsonify({"error":"Model response did not pass JSON/evidence schema validation.","mode":"live","model":DEFAULT_MODEL,"raw_response":raw[:5000],"request_id":str(uuid.uuid4()),"latency_ms":round((time.time()-started)*1000),"usage":{"prompt_tokens":getattr(usage,"prompt_tokens",None),"completion_tokens":getattr(usage,"completion_tokens",None)}}),502
+        # Deterministic server-side gate: the model proposes; this policy authorizes simulation only.
+        action_code = parsed.get("action_code", "review_only")
+        policy = {
+            "fan": ("restore_fan", clean["fan1_rpm"] == 0),
+            "hot": ("improve_airflow", clean["inlet_c"] >= 35),
+            "psu": ("inspect_psu", clean["psu_output_w"] < 500),
+            "healthy": ("no_action", clean["fan1_rpm"] > 0 and clean["inlet_c"] < 30 and clean["psu_output_w"] >= 500),
+        }
+        expected = policy.get(scenario)
+        if not expected or not expected[1] or action_code != expected[0]:
+            action_code = "review_only"
+        parsed["action_code"] = action_code
+        parsed["simulation_action_permitted"] = action_code in {"restore_fan", "improve_airflow", "inspect_psu", "no_action"}
         parsed["mode"]="live"
         parsed["model"]=DEFAULT_MODEL
         parsed["request_id"]=str(uuid.uuid4())
