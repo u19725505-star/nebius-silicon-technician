@@ -49,8 +49,28 @@ def diagnose():
         clean[k] = v
     context = str(body.get("source","scenario telemetry"))[:160]
     name = str(body.get("scenario_name",scenario))[:100]
-    system = """You are Nemotron acting as a cautious data-center technician. Diagnose only from the supplied scenario and measurements. Distinguish observed evidence from inference. Never claim to have accessed real hardware or taken an action. Return concise JSON with keys: severity (INFO/WARNING/CRITICAL), diagnosis, evidence (array of exact measurements or context facts), recommended_action, human_review_required (boolean), unsupported_claims (array). Be conservative; no invented readings, no false claims of execution."""
-    user = "Scenario: "+name+"\nEvidence source: "+context+"\nMeasurements (units in keys): "+json.dumps(clean,separators=(",",":"))+"\nRespond with valid JSON only. Do not treat the values as live hardware telemetry."
+    # Accept only a bounded, normalized summary of browser vision findings; never trust browser-supplied diagnoses.
+    raw_findings = body.get("vision_findings") or []
+    if not isinstance(raw_findings, list) or len(raw_findings) > 3:
+        return jsonify({"error":"vision_findings must be a list of at most three rack scans"}),400
+    vision = []
+    for item in raw_findings:
+        if not isinstance(item, dict) or str(item.get("rack","")) not in {"A","B","C"}:
+            return jsonify({"error":"Invalid rack vision finding"}),400
+        pixel_count = item.get("red_pixel_count",0)
+        detected = item.get("visual_fault_marker_detected",False)
+        if not isinstance(pixel_count,int) or isinstance(pixel_count,bool) or not 0 <= pixel_count <= 20000 or not isinstance(detected,bool):
+            return jsonify({"error":"Invalid numeric/boolean vision evidence"}),400
+        tele = item.get("telemetry") or {}
+        clean_tele = {}
+        for key in ("cpu_c","inlet_c","fan_rpm","psu_output_w"):
+            val = tele.get(key)
+            if not isinstance(val,(int,float)) or isinstance(val,bool):
+                return jsonify({"error":"Invalid vision telemetry: "+key}),400
+            clean_tele[key] = val
+        vision.append({"rack":item["rack"],"visual_fault_marker_detected":detected,"red_pixel_count":pixel_count,"scenario_sensor_anomaly":str(item.get("scenario_sensor_anomaly","unknown"))[:60],"telemetry":clean_tele})
+    system = """You are Nemotron acting as a cautious data-center technician. Diagnose only from the supplied simulated scenario, measurements, and bounded computer-vision scan summaries. Distinguish observed evidence from inference. A red-pixel count is a visual heuristic, not proof of a real physical fault. Never claim to have accessed real hardware or taken an action. Return concise JSON with keys: severity (INFO/WARNING/CRITICAL), diagnosis, evidence (array of exact measurements or context facts), recommended_action, human_review_required (boolean), unsupported_claims (array). Be conservative; no invented readings, no false claims of execution."""
+    user = "Scenario: "+name+"\nEvidence source: "+context+"\nSelected scenario measurements (units in keys): "+json.dumps(clean,separators=(",",":"))+"\nComputer-vision rack scan summaries: "+json.dumps(vision,separators=(",",":"))+"\nThese are synthetic browser-simulation observations, not physical camera data. Interpret the visual scan cautiously. Respond with valid JSON only. Do not treat values as live hardware telemetry."
     started = time.time()
     requests_seen += 1
     try:
