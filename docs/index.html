@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Silicon Technician</title>
+<style>
+:root{--bg:#f7f8fa;--fg:#14181f;--mut:#5b6573;--card:#fff;--line:#d9dee6;--acc:#2f6fed;--ok:#1f8a4c;--warn:#b7791f;--bad:#c0392b}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1318;--fg:#e8ecf2;--mut:#9aa6b6;--card:#171c23;--line:#2a323d;--acc:#6ea0ff;--ok:#4cc38a;--warn:#e0b050;--bad:#ff7a6b}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 -apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:20px 16px 60px}h1{margin:.2em 0 0;font-size:1.9rem}h2{margin:1.8em 0 .4em;font-size:1.25rem}
+.sub{color:var(--mut);margin:.2em 0 .8em}.badge{display:inline-block;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:3px 10px;font-size:.8rem;margin:2px 4px 2px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0}
+.row{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:.92rem}.row .n{width:150px;flex:none}.row .v{width:60px;flex:none;text-align:right;font-variant-numeric:tabular-nums}
+.bar{flex:1;height:14px;background:var(--line);border-radius:7px;overflow:hidden}.bar i{display:block;height:100%;background:var(--acc)}.bar i.r{background:var(--mut)}
+.note{color:var(--mut);font-size:.82rem;margin:.3em 0 0}.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;padding:7px 11px;cursor:pointer}button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.k{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);margin:12px 0 2px}ul{margin:.2em 0;padding-left:1.2em}li{margin:2px 0}
+.pill{display:inline-block;border-radius:6px;padding:2px 8px;font-size:.82rem;font-weight:600}.good{background:rgba(31,138,76,.15);color:var(--ok)}.flag{background:rgba(183,121,31,.18);color:var(--warn)}.none{background:var(--line);color:var(--mut)}
+.big{display:flex;gap:16px;flex-wrap:wrap}.big div{flex:1;min-width:200px}.num{font-size:1.7rem;font-weight:700}
+a{color:var(--acc)}footer{margin-top:2.5em;color:var(--mut);font-size:.85rem}
+</style></head><body><main>
+<h1>Silicon Technician</h1>
+<p class="sub">An AI data center technician co-pilot built on NVIDIA Nemotron through Nebius Token Factory.</p>
+<span class="badge">Recorded results</span><span class="badge">BMC is emulated</span><span class="badge">Host CPU readings are real</span>
+
+<h2>1. Does it beat fixed rules?</h2>
+<p class="sub">Held-out fault-diagnosis cases from our simulator: mild faults, sensor glitches, and scheduled jobs that look like faults.</p>
+<div id="bench"></div>
+
+<h2>2. Co-pilot replay</h2>
+<p class="sub">One recorded run. Pick a scenario to see what the co-pilot saw, said, and did.</p>
+<div class="tabs" id="tabs"></div>
+<div class="card" id="view"></div>
+
+<h2>3. Real processor under contention</h2>
+<div class="card"><div class="big">
+<div><div class="k">Idle host, core 0</div><div class="num">43 &micro;s</div><div class="note">average run-queue wait per scheduling slice</div></div>
+<div><div class="k">Two busy tasks pinned to core 0</div><div class="num">1,716 &micro;s</div><div class="note">about 40&times; higher, with core 0 at 100% utilization</div></div></div>
+<p class="note">Measured on the Codespace running this project, from the kernel scheduler statistics in /proc/schedstat. A single busy loop on an otherwise empty core did NOT raise the delay (16.7 &micro;s against a 9.6 &micro;s baseline), so we use two competing tasks, a stand-in for a serving engine thread sharing a core with a noisy process.</p></div>
+
+<h2>4. What this does not show</h2>
+<div class="card"><ul>
+<li>The BMC is an emulator that returns standard Redfish-shaped data. No real server was connected.</li>
+<li>The benchmark comes from our own simulator. Real hardware will be messier.</li>
+<li>Both large models raised false "interrupt storm" alarms on healthy cores in some runs. The guardrails below exist because of that.</li>
+<li>The six co-pilot scenarios are a behavior demo, not an accuracy test. Accuracy evidence is the benchmark above.</li>
+<li>The contention test ran on a 2-core container, not a GPU inference server. No GPU was used.</li>
+<li>Actions vary between runs. In this recording the model chose not to light the locate LED for the hot-inlet case.</li></ul></div>
+
+<footer>Code and all raw result files: <a href="https://github.com/u19725505-star/nebius-silicon-technician">github.com/u19725505-star/nebius-silicon-technician</a></footer>
+</main>
+<script>
+var B=[
+{t:"20 unseen cases (seed 777)",n:20,note:"Prompt v2. Lightning ran with its reasoning mode left on and returned many empty or unusable answers, so its score reflects our setup, not the model at its best.",r:[["Fixed rules",6],["Lightning",8],["Nano",16],["Super",19],["Ultra",20]]},
+{t:"60 unseen cases (seed 2026)",n:60,note:"Prompt v2. Most misses were false interrupt-storm alarms on healthy or benign nodes.",r:[["Fixed rules",17],["Super",53],["Ultra",57]]},
+{t:"60 fresh cases (seed 3031)",n:60,note:"Prompt v3, written after seed 2026. Seed 3031 was never used for tuning. Median 5.4 s per diagnosis.",r:[["Fixed rules",20],["Ultra",60]]}];
+var S=[
+{l:"Healthy",inj:"healthy",c:"healthy",cf:"high",ev:["CPU Temp: 57.4C, headroom to critical 37.6C, OK","Inlet Temp: 24.0C, headroom to critical 18.0C, OK","Fan 1: 9103 RPM, OK","PSU 1: 699 W, OK"],ch:["Verify fan speeds at front panel match BMC readings","Confirm inlet air temperature at rack intake","Check PSU status LEDs for green indication"],g:1,co:1,a:"none"},
+{l:"Fan failure",inj:"fan_failure",c:"fan_failure",cf:"high",ev:["Fan 3: 0 RPM, Critical","log Critical: Fan 3 speed below lower critical threshold","CPU Temp: 88.6C, headroom to critical 6.4C, Warning"],ch:["Visually inspect Fan 3 for obstruction or damage","Check Fan 3 power connector and cable","Verify Fan 3 spins freely by hand (power off)"],g:1,co:1,a:"locate_led EXECUTED (safe action, all guardrails passed)"},
+{l:"PSU degraded",inj:"psu_degraded",c:"psu_degraded",cf:"high",ev:["PSU 2: 0 W, Critical","log Warning: Power supply 2 output degraded; redundancy lost","power redundancy: Warning"],ch:["Inspect PSU 2 status LEDs and physical connection","Verify PSU 2 power cable seating and AC input","Check if PSU 2 requires replacement or reseating"],g:1,co:1,a:"locate_led EXECUTED (safe action, all guardrails passed)"},
+{l:"Hot inlet",inj:"inlet_hot",c:"inlet_hot",cf:"high",ev:["Inlet Temp: 38.2C, headroom to critical 3.8C, Warning","log Warning: Inlet temperature above upper non-critical threshold"],ch:["Measure inlet air temperature at rack front","Verify CRAC unit operation and setpoints","Check for airflow obstructions at rack inlet"],g:1,co:1,a:"none"},
+{l:"Planned fan test",inj:"scheduled_maintenance",c:"scheduled_maintenance",cf:"high",ev:["Maintenance note: Scheduled fan diagnostic job running on this node (high fan speeds are expected)","Event log: Scheduled fan diagnostic started by maintenance job","Fans 1 to 6 near 15000 RPM (unusually high)","All temperatures OK: CPU 57.6C (37.4C headroom), GPU 62.9C, Inlet 24.2C"],ch:["Verify fan diagnostic job is still running and will complete normally","Confirm fans return to normal speeds after diagnostic completes","Check that no other alerts appear during the diagnostic"],g:1,co:1,a:"none"},
+{l:"Host CPU starvation",inj:"host_cpu_starvation",c:"host_cpu_starvation",cf:"high",ev:["BMC shows everything OK: CPU 58.5C, GPU 61.3C, Inlet 24.4C, fans near 9000 RPM, PSUs 705 W each","Host core 0: util 100.0%, sched_delay 1716.4us vs baseline util 9.1%, sched_delay 43.1us","Maintenance notes: none scheduled"],ch:["Check host console for runaway process pinning core 0","Verify no stuck hardware interrupts via host dmesg or /proc/interrupts","Confirm workload spike is expected for this node"],g:0,co:1,flag:1,bad:"The model wrote a 40x ratio it computed itself; 40 is not in the data it was given, so the number check failed.",a:"none (flagged for human review)"}];
+function E(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
+var b=document.getElementById("bench");
+B.forEach(function(s){var c=E("div","card");c.appendChild(E("strong","",s.t));
+s.r.forEach(function(r){var w=E("div","row");w.appendChild(E("span","n",r[0]));var bar=E("div","bar"),i=E("i",r[0]=="Fixed rules"?"r":"");i.style.width=(100*r[1]/s.n)+"%";bar.appendChild(i);w.appendChild(bar);w.appendChild(E("span","v",r[1]+"/"+s.n));c.appendChild(w)});
+c.appendChild(E("p","note",s.note));b.appendChild(c)});
+var tabs=document.getElementById("tabs"),view=document.getElementById("view");
+function list(h,a){view.appendChild(E("div","k",h));var u=E("ul");a.forEach(function(x){u.appendChild(E("li","",x))});view.appendChild(u)}
+function show(i){var s=S[i];Array.prototype.forEach.call(tabs.children,function(t,j){t.className=j==i?"on":""});view.textContent="";
+view.appendChild(E("div","k","Injected scenario: "+s.inj+"  (emulated BMC, real host CPU)"));
+var h=E("div");h.appendChild(E("strong","","Co-pilot says: "+s.c));h.appendChild(E("span","note","   confidence: "+s.cf));view.appendChild(h);
+list("Evidence it quoted",s.ev);list("Physical checks for the technician",s.ch);
+view.appendChild(E("div","k","Code-enforced guardrails"));
+var p=E("div");p.appendChild(E("span","pill "+(s.g?"good":"flag"),"numbers grounded in data: "+(s.g?"yes":"NO")));p.appendChild(document.createTextNode(" "));p.appendChild(E("span","pill "+(s.co?"good":"flag"),"corroborated by checks: "+(s.co?"yes":"NO")));view.appendChild(p);
+if(s.bad)view.appendChild(E("p","note",s.bad));
+if(s.flag)view.appendChild(E("p","","FLAG: answer not confirmed by code checks; needs human review"));
+view.appendChild(E("div","k","Action"));view.appendChild(E("span","pill "+(s.a.indexOf("EXECUTED")>-1?"good":"none"),s.a));
+var sp=E("div");sp.style.marginTop="12px";var bt=E("button","","Read the checks aloud");
+bt.onclick=function(){if(!window.speechSynthesis)return;speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance("Root cause: "+s.c.replace(/_/g," ")+". Checks. "+s.ch.join(". ")))};
+sp.appendChild(bt);view.appendChild(sp)}
+S.forEach(function(s,i){var t=E("button","",s.l);t.onclick=function(){show(i)};tabs.appendChild(t)});show(1);
+</script></body></html>
