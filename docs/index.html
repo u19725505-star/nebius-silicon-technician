@@ -176,7 +176,7 @@ async function live(){
  if(!confirm('Run a live Nemotron diagnosis using simulated telemetry? This sends one request to the configured backend and may consume Token Factory credits. Continue?'))return;
  $('liveBtn').disabled=true;$('modelStatus').textContent='Sending one explicitly requested inference request…';$('diagnosis').textContent='Waiting for the configured diagnosis API. No hardware action can be executed.';
  try{
-  const res=await fetch('https://silicon-technician-judge-api.onrender.com/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scenario:d.scenario,scenario_name:d.name,source:d.source,vision_findings:visionFindings,robot_mission_complete:missionDone,telemetry:{cpu_c:d.cpu,thermal_headroom_c:Math.max(0,100-d.cpu),inlet_c:d.inlet,fan1_rpm:d.fan,psu_output_w:d.psu}})});
+  const res=await fetch('/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scenario:d.scenario,scenario_name:d.name,source:d.source,vision_findings:visionFindings,robot_mission_complete:missionDone,telemetry:{cpu_c:d.cpu,thermal_headroom_c:Math.max(0,100-d.cpu),inlet_c:d.inlet,fan1_rpm:d.fan,psu_output_w:d.psu}})});
   const body=await res.json();
   if(!res.ok||!body||!body.diagnosis)throw new Error(body.error||('Inference failed HTTP '+res.status));
   $('diagnosis').textContent='LIVE NEMOTRON DIAGNOSIS\\n\\n'+JSON.stringify(body,null,2);
