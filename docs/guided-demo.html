@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Silicon Technician: guided demo</title>
+<style>
+:root{--bg:#f4f6fa;--fg:#12171f;--mut:#5b6573;--card:#fff;--line:#d5dbe4;--acc:#2f6fed;--ok:#1f8a4c;--warn:#b7791f;--bad:#c0392b;--glow:#3d9bff}
+@media(prefers-color-scheme:dark){:root{--bg:#0b0f14;--fg:#e8ecf2;--mut:#98a4b5;--card:#141a22;--line:#27303b;--acc:#6ea0ff;--ok:#4cc38a;--warn:#e0b050;--bad:#ff7a6b;--glow:#6bb6ff}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 -apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:1020px;margin:0 auto;padding:16px 14px 60px}
+h1{margin:0;font-size:1.8rem}
+h2{font-size:1.15rem;margin:1.6em 0 .4em}
+.sub,.note{color:var(--mut);font-size:.9rem}
+.tags span{display:inline-block;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:2px 10px;font-size:.78rem;margin:6px 4px 0 0}
+.cta{font:inherit;font-size:1.15rem;font-weight:700;padding:14px 22px;border-radius:12px;border:0;background:var(--acc);color:#fff;margin:14px 0 10px;cursor:pointer;box-shadow:0 0 20px rgba(61,155,255,.55)}
+#steps{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px}
+button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:9px;padding:7px 11px;cursor:pointer}
+#steps button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.stage{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:780px){.stage{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;min-height:200px}
+.title{font-weight:600;margin-bottom:6px}
+.k{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);margin:12px 0 4px}
+.maint{display:none;background:rgba(183,121,31,.16);border:1px solid var(--warn);border-radius:8px;padding:6px 10px;font-size:.85rem;margin:6px 0}
+.row0{display:flex;align-items:center;gap:10px}
+#star polygon{fill:var(--line);stroke:var(--mut);stroke-width:2}
+#star.on polygon{fill:var(--glow);stroke:#fff;animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{filter:drop-shadow(0 0 2px var(--glow));opacity:.75}50%{filter:drop-shadow(0 0 14px var(--glow));opacity:1}}
+.fans{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;text-align:center}
+.fan{width:44px;height:44px;margin:0 auto;border-radius:50%;border:3px solid var(--line);background:conic-gradient(var(--mut) 0 10%,transparent 10% 25%,var(--mut) 25% 35%,transparent 35% 50%,var(--mut) 50% 60%,transparent 60% 75%,var(--mut) 75% 85%,transparent 85% 100%);animation:spin var(--spin,.6s) linear infinite}
+.fan.bad{border-color:var(--bad);animation-play-state:paused}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fl{font-size:.7rem;color:var(--mut);margin-top:2px;min-height:2.4em;white-space:pre-line}
+.psus{display:flex;gap:8px}
+.psu{flex:1;border:2px solid var(--ok);border-radius:8px;padding:6px;text-align:center;font-size:.85rem;white-space:pre-line}
+.psu.warn{border-color:var(--warn)}.psu.bad{border-color:var(--bad)}
+.tr{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:.85rem}
+.tr .n{width:56px}.tr .bar{flex:1;height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.tr i{display:block;height:100%;background:var(--ok)}.tr i.warn{background:var(--warn)}.tr i.bad{background:var(--bad)}
+.tr .v{width:150px;text-align:right}
+.who{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.avatar{width:38px;height:38px}.avatar polygon{fill:var(--line)}
+.talking .avatar polygon{fill:var(--glow);animation:pulse 1s ease-in-out infinite}
+.sweep{position:relative;margin-left:auto;height:12px;width:150px;background:var(--line);border-radius:6px;overflow:hidden;opacity:.6}
+.sweep b{position:absolute;top:0;left:0;width:46px;height:100%;border-radius:6px;background:linear-gradient(90deg,transparent,var(--glow),transparent);animation:sw 1s ease-in-out infinite alternate;opacity:0}
+.talking .sweep{opacity:1}.talking .sweep b{opacity:1}
+@keyframes sw{to{left:calc(100% - 46px)}}
+.say{margin:12px 0;font-size:1.05rem;min-height:6em}
+.pill{display:inline-block;border-radius:6px;padding:2px 8px;font-size:.8rem;font-weight:600;margin:2px 4px 2px 0}
+.good{background:rgba(31,138,76,.16);color:var(--ok)}.flag{background:rgba(183,121,31,.2);color:var(--warn)}.none{background:var(--line);color:var(--mut)}
+ul{margin:.2em 0;padding-left:1.2em}li{margin:2px 0;font-size:.9rem}
+.ctrl{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+.hb{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:.88rem}
+.hb .n{width:100px}.hb .bar{flex:1;height:12px;background:var(--line);border-radius:6px;overflow:hidden}
+.hb i{display:block;height:100%;background:var(--acc)}.hb i.r{background:var(--mut)}.hb .v{width:46px;text-align:right}
+a{color:var(--acc)}footer{margin-top:2em;color:var(--mut);font-size:.85rem}
+</style></head><body><main>
+<h1>Silicon Technician</h1>
+<div class="sub">An AI data center technician co-pilot. NVIDIA Nemotron on Nebius Token Factory.</div>
+<div class="tags"><span>Recorded run</span><span>BMC is emulated</span><span>Host CPU numbers are real</span><span id="srcTag">Narration: script written by us from the recorded results</span></div>
+<button class="cta" id="go">Nemotron, show us your demo</button>
+<div id="steps"></div>
+<div class="stage">
+ <div class="panel" id="rackPanel">
+  <div class="title">Emulated server (blue star = locate LED)</div>
+  <div id="maint" class="maint"></div>
+  <div class="row0"><svg id="star" viewBox="0 0 100 100" width="46" height="46"><polygon points="50,5 61,38 96,38 68,58 79,92 50,72 21,92 32,58 4,38 39,38"/></svg><span class="note" id="ledTxt">Locate LED off</span></div>
+  <div class="k">Fans</div><div class="fans" id="fans"></div>
+  <div class="k">Power supplies</div><div class="psus" id="psus"></div>
+  <div class="k">Temperatures and headroom to critical</div><div id="temps"></div>
+  <div id="hostBox"><div class="k">Real host CPU (this project's Codespace)</div><div id="host"></div></div>
+ </div>
+ <div class="panel" id="scorePanel" style="display:none"></div>
+ <div class="panel" id="nemo">
+  <div class="who"><svg class="avatar" viewBox="0 0 100 100"><polygon points="50,5 61,38 96,38 68,58 79,92 50,72 21,92 32,58 4,38 39,38"/></svg>
+   <div><strong>Silicon Technician</strong><div class="note">Nemotron-based co-pilot</div></div><div class="sweep"><b></b></div></div>
+  <div class="say" id="say"></div>
+  <div id="detail"></div>
+ </div>
+</div>
+<div class="ctrl"><button id="back">Back</button><button id="play">Play</button><button id="next">Next</button><button id="voice">Voice: on</button></div>
+<h2>What this does not show</h2>
+<ul>
+<li>The BMC is an emulator that returns standard Redfish-shaped data. No real server was connected.</li>
+<li>The benchmark comes from our own simulator. Real hardware will be messier.</li>
+<li>Both large models raised false interrupt-storm alarms on healthy cores in some runs, which is why the guardrails exist.</li>
+<li>The six scenarios are a behavior demo, not an accuracy test. The accuracy evidence is the scorecard.</li>
+<li>The processor measurement ran on a 2-core container, not a GPU server. No GPU was used.</li>
+<li>Actions vary between runs. In this recording the hot-inlet case did not light the LED.</li></ul>
+<footer>Code and raw results: <a href="https://github.com/u19725505-star/nebius-silicon-technician">github.com/u19725505-star/nebius-silicon-technician</a></footer>
+</main>
+<script>
+var B=[
+{t:"20 unseen cases (seed 777)",n:20,r:[["Fixed rules",6],["Lightning",8],["Nano",16],["Super",19],["Ultra",20]],note:"Lightning ran with reasoning left on and often returned unusable answers, so that score reflects our setup."},
+{t:"60 unseen cases (seed 2026)",n:60,r:[["Fixed rules",17],["Super",53],["Ultra",57]],note:"Most misses were false interrupt-storm alarms."},
+{t:"60 fresh cases (seed 3031)",n:60,r:[["Fixed rules",20],["Ultra",60]],note:"Never used for tuning. Median 5.4 s per diagnosis."}];
+function mk(spin,labels,bad){var a=[];for(var i=0;i<6;i++)a.push({s:spin,l:(labels&&labels[i])?labels[i]:"",b:bad===i});return a}
+var STEPS=[
+{tab:"1 Arrive",sc:"healthy",cf:"high",fans:mk(0.55,{0:"9103 RPM"}),psus:[{n:"PSU 1",w:699,st:"ok"},{n:"PSU 2",w:null,st:"ok"}],temps:[{n:"CPU",c:57.4,h:37.6,st:"ok"},{n:"Inlet",c:24.0,h:18.0,st:"ok"}],host:null,maint:"",led:false,
+ev:["CPU Temp: 57.4C, headroom to critical 37.6C, OK","Inlet Temp: 24.0C, headroom to critical 18.0C, OK","Fan 1: 9103 RPM, OK","PSU 1: 699 W, OK"],
+ch:["Verify fan speeds at front panel match BMC readings","Confirm inlet air temperature at rack intake","Check PSU status LEDs for green indication"],g:true,co:true,flag:"",bad:"",act:"none",
+say:"Good morning. I'm Silicon Technician, an AI co-pilot running on NVIDIA Nemotron. I'm looking at one rack server through its management controller, which in this demo is an emulator. Everything reads normal: CPU at 57.4 degrees with 37.6 of headroom, inlet air at 24 degrees, fan 1 at 9103 RPM, and power supply 1 at 699 watts. My answer is simple: healthy, and I do nothing."},
+{tab:"2 Fan fails",sc:"fan_failure",cf:"high",fans:mk(0.55,{2:"0 RPM"},2),psus:[{n:"PSU 1",w:null,st:"ok"},{n:"PSU 2",w:null,st:"ok"}],temps:[{n:"CPU",c:88.6,h:6.4,st:"warn"}],host:null,maint:"",led:true,
+ev:["Fan 3: 0 RPM, Critical","log Critical: Fan 3 speed below lower critical threshold","CPU Temp: 88.6C, headroom to critical 6.4C, Warning"],
+ch:["Visually inspect Fan 3 for obstruction or damage","Check Fan 3 power connector and cable","Verify Fan 3 spins freely by hand (power off)"],g:true,co:true,flag:"",bad:"",act:"locate_led EXECUTED (safe action, all guardrails passed)",
+say:"Now the first real alarm. Fan 3 is reading zero RPM and the event log says critical. The CPU has already climbed to 88.6 degrees with only 6.4 of headroom left. My checks match what I'm saying, so I light the blue locate LED. Your technician can find this rack fast, and I touch nothing else."},
+{tab:"3 Power supply",sc:"psu_degraded",cf:"high",fans:mk(0.55,null),psus:[{n:"PSU 1",w:null,st:"ok"},{n:"PSU 2",w:0,st:"bad"}],temps:[],host:null,maint:"",led:true,
+ev:["PSU 2: 0 W, Critical","log Warning: Power supply 2 output degraded; redundancy lost","power redundancy: Warning"],
+ch:["Inspect PSU 2 status LEDs and physical connection","Verify PSU 2 power cable seating and AC input","Check if PSU 2 requires replacement or reseating"],g:true,co:true,flag:"",bad:"",act:"locate_led EXECUTED (safe action, all guardrails passed)",
+say:"Next, power. Power supply 2 is putting out zero watts, the log says output degraded, and redundancy is lost. I light the blue LED again and give the technician checks: the status lights, the cable seating, and whether the unit needs replacing."},
+{tab:"4 Hot aisle",sc:"inlet_hot",cf:"high",fans:mk(0.35,null),psus:[{n:"PSU 1",w:null,st:"ok"},{n:"PSU 2",w:null,st:"ok"}],temps:[{n:"Inlet",c:38.2,h:3.8,st:"warn"}],host:null,maint:"",led:false,
+ev:["Inlet Temp: 38.2C, headroom to critical 3.8C, Warning","log Warning: Inlet temperature above upper non-critical threshold"],
+ch:["Measure inlet air temperature at rack front","Verify CRAC unit operation and setpoints","Check for airflow obstructions at rack inlet"],g:true,co:true,flag:"",bad:"",act:"none (in this recording the model did not light the LED)",
+say:"Now a hot aisle. Inlet air is 38.2 degrees, with 3.8 degrees of headroom to critical, and the log agrees. I flag it and suggest checking the cooling units and any blocked airflow. In this recording I did not light the LED."},
+{tab:"5 Planned test",sc:"scheduled_maintenance",cf:"high",fans:mk(0.22,["15100 RPM","14979 RPM","14965 RPM","15092 RPM","14956 RPM","15109 RPM"]),psus:[{n:"PSU 1",w:null,st:"ok"},{n:"PSU 2",w:null,st:"ok"}],temps:[{n:"CPU",c:57.6,h:37.4,st:"ok"},{n:"GPU",c:62.9,h:32.1,st:"ok"},{n:"Inlet",c:24.2,h:17.8,st:"ok"}],host:null,
+maint:"Maintenance note: Scheduled: fan diagnostic job running on this node (high fan speeds are expected).",led:false,
+ev:["Maintenance note: fan diagnostic job running (high fan speeds are expected)","Event log: Scheduled fan diagnostic started by maintenance job","Fans 1 to 6 near 15000 RPM (unusually high)","All temperatures OK: CPU 57.6C (37.4C headroom), GPU 62.9C, Inlet 24.2C"],
+ch:["Verify fan diagnostic job is still running and will complete normally","Confirm fans return to normal speeds after diagnostic completes","Check that no other alerts appear during the diagnostic"],g:true,co:true,flag:"",bad:"",act:"none",
+say:"Here is where a simple alarm system would panic. All six fans are near 15000 RPM, which looks like a failure. But the maintenance note says a fan diagnostic is running, and the event log confirms it. Temperatures are fine, with CPU at 57.6 degrees. So I call it scheduled maintenance and take no action."},
+{tab:"6 Invisible fault",sc:"host_cpu_starvation",cf:"high",fans:mk(0.55,["~9000","~9000","~9000","~9000","~9000","~9000"]),psus:[{n:"PSU 1",w:705,st:"ok"},{n:"PSU 2",w:705,st:"ok"}],temps:[{n:"CPU",c:58.5,h:36.5,st:"ok"},{n:"GPU",c:61.3,h:33.7,st:"ok"},{n:"Inlet",c:24.4,h:17.6,st:"ok"}],
+host:{bu:9.1,bd:43.1,nu:100.0,nd:1716.4},maint:"",led:false,
+ev:["BMC shows everything OK: CPU 58.5C, GPU 61.3C, Inlet 24.4C, fans near 9000 RPM, PSUs 705 W each","Host core 0: util 100.0%, sched_delay 1716.4us vs baseline util 9.1%, sched_delay 43.1us","Maintenance notes: none scheduled"],
+ch:["Check host console for runaway process pinning core 0","Verify no stuck hardware interrupts via host dmesg or /proc/interrupts","Confirm workload spike is expected for this node"],g:false,co:true,
+flag:"FLAG: answer not confirmed by code checks; needs human review",bad:"The model wrote a 40x ratio it computed itself. 40 is not in the data it was given, so the number check failed.",act:"none (flagged for human review)",
+say:"And now the fault the management controller cannot see. Every BMC reading is healthy, including CPU at 58.5 degrees and both power supplies at 705 watts. But on the host itself, core 0 is at 100 percent, and its scheduler delay has jumped from 43.1 to 1716.4 microseconds. That is real work waiting for the processor. I diagnose host CPU starvation. One more thing: my own answer was flagged for human review, because I quoted a ratio that was not in the data. That guardrail is working as intended."},
+{tab:"7 Scorecard",score:true,say:"That's the demo. On sixty brand-new test cases, fixed rules got twenty right and Ultra got all sixty. I'll be straight about the limits: the BMC is an emulator, the cases come from our own simulator, and no GPU server was involved. What is real is the processor measurement and the guardrails."}
+];
+var NARR=[],cur=0,playing=false,voiceOn=true,runToken=0;
+function E(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
+function I(i){return document.getElementById(i)}
+function drawRack(s){
+ var f=I("fans");f.textContent="";
+ s.fans.forEach(function(x,i){var w=E("div");var d=E("div","fan"+(x.b?" bad":""));d.style.setProperty("--spin",x.s+"s");w.appendChild(d);w.appendChild(E("div","fl","F"+(i+1)+(x.l?"\n"+x.l:"")));f.appendChild(w)});
+ var p=I("psus");p.textContent="";
+ s.psus.forEach(function(x){p.appendChild(E("div","psu "+(x.st==="ok"?"":x.st),x.n+(x.w!==null?"\n"+x.w+" W":"")))});
+ var t=I("temps");t.textContent="";
+ if(!s.temps.length)t.appendChild(E("div","note","Not quoted in this part of the recording"));
+ s.temps.forEach(function(x){var r=E("div","tr");r.appendChild(E("span","n",x.n));var b=E("div","bar"),i=E("i",x.st==="ok"?"":x.st);i.style.width=Math.min(100,x.c)+"%";b.appendChild(i);r.appendChild(b);r.appendChild(E("span","v",x.c+"C, headroom "+x.h+"C"));t.appendChild(r)});
+ var hb=I("hostBox"),h=I("host");h.textContent="";
+ if(s.host){hb.style.display="block";
+  [["Baseline",s.host.bu,s.host.bd],["Now",s.host.nu,s.host.nd]].forEach(function(r){var row=E("div","hb");row.appendChild(E("span","n",r[0]+" core 0"));var b=E("div","bar"),i=E("i",r[0]==="Baseline"?"r":"");i.style.width=r[1]+"%";b.appendChild(i);row.appendChild(b);row.appendChild(E("span","v",r[1]+"%"));h.appendChild(row);h.appendChild(E("div","note","scheduler delay "+r[2]+" us (average run-queue wait per scheduling slice)"))});
+ }else hb.style.display="none";
+ var m=I("maint");if(s.maint){m.style.display="block";m.textContent=s.maint}else m.style.display="none";
+ I("star").setAttribute("class",s.led?"on":"");I("ledTxt").textContent=s.led?"Locate LED ON (lit by the co-pilot)":"Locate LED off";
+}
+function lst(par,h,a){par.appendChild(E("div","k",h));var u=E("ul");a.forEach(function(x){u.appendChild(E("li","",x))});par.appendChild(u)}
+function drawDetail(s,d){
+ var h=E("div");h.appendChild(E("strong","","Root cause: "+s.sc));h.appendChild(E("span","note","   confidence: "+s.cf));d.appendChild(h);
+ lst(d,"Evidence it quoted",s.ev);lst(d,"Checks for the technician",s.ch);
+ d.appendChild(E("div","k","Code-enforced guardrails"));
+ d.appendChild(E("span","pill "+(s.g?"good":"flag"),"numbers grounded in data: "+(s.g?"yes":"NO")));
+ d.appendChild(E("span","pill "+(s.co?"good":"flag"),"corroborated by checks: "+(s.co?"yes":"NO")));
+ if(s.bad)d.appendChild(E("div","note",s.bad));
+ if(s.flag)d.appendChild(E("div","","\u26A0 "+s.flag));
+ d.appendChild(E("div","k","Action"));d.appendChild(E("span","pill "+(s.act.indexOf("EXECUTED")>-1?"good":"none"),s.act));
+}
+function drawScore(){
+ var p=I("scorePanel");p.textContent="";p.appendChild(E("div","title","Scorecard: fixed rules versus Nemotron"));
+ B.forEach(function(s){p.appendChild(E("div","k",s.t));
+  s.r.forEach(function(r){var w=E("div","hb");w.appendChild(E("span","n",r[0]));var b=E("div","bar"),i=E("i",r[0]==="Fixed rules"?"r":"");i.style.width=(100*r[1]/s.n)+"%";b.appendChild(i);w.appendChild(b);w.appendChild(E("span","v",r[1]+"/"+s.n));p.appendChild(w)});
+  p.appendChild(E("div","note",s.note))});
+}
+function typeText(text,el,tok){return new Promise(function(res){var i=0;el.textContent="";
+ (function tick(){if(tok!==runToken){res();return}i+=2;el.textContent=text.slice(0,i);if(i>=text.length){res();return}setTimeout(tick,voiceOn?65:18)})()})}
+function speakText(text,tok){return new Promise(function(res){
+ if(!voiceOn||!window.speechSynthesis||tok!==runToken){res();return}
+ var t=setTimeout(done,text.length*80+2500);
+ function done(){clearTimeout(t);res()}
+ var u=new SpeechSynthesisUtterance(text);u.onend=done;u.onerror=done;speechSynthesis.speak(u)})}
+function narrate(i,quiet){
+ var tok=runToken,say=I("say");
+ if(quiet){say.textContent="Press the blue button and I will walk you through a day on site.";return}
+ var text=NARR[i]||STEPS[i].say,nemo=I("nemo");nemo.classList.add("talking");
+ Promise.all([typeText(text,say,tok),speakText(text,tok)]).then(function(){
+  if(tok!==runToken)return;nemo.classList.remove("talking");
+  if(playing){if(i<STEPS.length-1){setTimeout(function(){if(tok===runToken&&playing)show(i+1)},1400)}else{playing=false;I("play").textContent="Replay"}}});
+}
+function show(i,quiet){
+ cur=i;runToken++;I("nemo").classList.remove("talking");
+ if(window.speechSynthesis)speechSynthesis.cancel();
+ var s=STEPS[i],bs=I("steps").children;
+ for(var k=0;k<bs.length;k++)bs[k].className=(k===i)?"on":"";
+ I("rackPanel").style.display=s.score?"none":"block";I("scorePanel").style.display=s.score?"block":"none";
+ var d=I("detail");d.textContent="";
+ if(s.score)drawScore();else{drawRack(s);drawDetail(s,d)}
+ narrate(i,quiet);
+}
+function jump(i){playing=false;I("play").textContent="Play";show(Math.max(0,Math.min(STEPS.length-1,i)))}
+function startPlay(from){playing=true;I("play").textContent="Pause";show(from)}
+function stopPlay(){playing=false;runToken++;if(window.speechSynthesis)speechSynthesis.cancel();I("nemo").classList.remove("talking");I("play").textContent="Play"}
+STEPS.forEach(function(s,i){var b=E("button","",s.tab);b.onclick=function(){jump(i)};I("steps").appendChild(b)});
+I("go").onclick=function(){startPlay(0)};
+I("play").onclick=function(){if(playing){stopPlay()}else{startPlay(cur>=STEPS.length-1?0:cur)}};
+I("back").onclick=function(){jump(cur-1)};I("next").onclick=function(){jump(cur+1)};
+I("voice").onclick=function(){voiceOn=!voiceOn;I("voice").textContent="Voice: "+(voiceOn?"on":"off");if(!voiceOn&&window.speechSynthesis)speechSynthesis.cancel()};
+try{fetch("narration.json").then(function(r){return r.ok?r.json():null}).then(function(j){
+ if(!j||!j.steps)return;var n=0;
+ for(var i=0;i<STEPS.length;i++){if(typeof j.steps[i]==="string"&&j.steps[i]){NARR[i]=j.steps[i];n++}}
+ var t=I("srcTag");
+ if(n===STEPS.length)t.textContent="Narration: written by Nemotron, numbers checked by code";
+ else if(n>0)t.textContent="Narration: partly written by Nemotron, numbers checked by code";
+}).catch(function(){})}catch(e){}
+show(0,true);
+</script></body></html>
