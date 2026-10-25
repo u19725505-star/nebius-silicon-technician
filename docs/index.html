@@ -77,7 +77,7 @@ const cases={
  psu:{name:'PSU anomaly',rack:0,cpu:67,inlet:23,fan:7100,psu:390,risk:83,scenario:'psu',source:'simulated power-supply output telemetry',summary:'Rack A PSU output is below the expected operating band.',action:'Compare redundant PSU readings and check the power feed with an authorized technician.',severity:'WARNING'},
  healthy:{name:'Healthy run',rack:0,cpu:54,inlet:22,fan:7200,psu:680,risk:7,scenario:'healthy',source:'simulated baseline telemetry',summary:'No significant anomaly is present in this sampled baseline.',action:'Continue passive monitoring and retain the sample as a baseline.',severity:'INFO'}
 };
-let selected='fan',robot={x:90,y:530},route=[],moving=false,startTime=0,elapsed=0,missionDone=false,reportData=null,raf=0;
+let selected='fan',robot={x:90,y:530},route=[],moving=false,startTime=0,elapsed=0,missionDone=false,reportData=null,raf=0,repaired=false;
 const rackPos=[{x:280,y:190,label:'RACK A'},{x:500,y:190,label:'RACK B'},{x:720,y:190,label:'RACK C'}];
 const $=id=>document.getElementById(id);
 function setCoreState(text){const el=$('coreState');if(el)el.textContent=text;}
@@ -88,7 +88,7 @@ function draw(){
   if(robotEl)robotEl.setAttribute('transform','translate('+robot.x+' '+robot.y+')');
   if(label){label.setAttribute('x',Math.min(830,robot.x+30));label.setAttribute('y',Math.max(24,robot.y-30))}
   rackPos.forEach((p,i)=>{
-    const fault=cases[selected].rack===i&&selected!=='healthy';
+    const fault=cases[selected].rack===i&&selected!=='healthy'&&!repaired;
     const rack=$('svgRack'+i),faultEl=$('fault'+i),labelEl=$('rackLabel'+i);
     if(rack){const rect=rack.querySelector('rect');if(rect){rect.setAttribute('fill',fault?'#321b27':'#0c2635');rect.setAttribute('stroke',fault?'#ff6378':'#2a6077')}}
     if(faultEl)faultEl.setAttribute('visibility',fault?'visible':'hidden');
@@ -122,11 +122,15 @@ function speak(text){
  if(!voiceEnabled||!('speechSynthesis' in window))return;
  try{const u=new SpeechSynthesisUtterance(text);u.rate=.94;u.pitch=1.02;window.speechSynthesis.speak(u)}catch(e){}
 }
+async function moveRobotTo(x,y,duration=950){
+ const from={x:robot.x,y:robot.y},start=performance.now();
+ return new Promise(resolve=>{function tick(now){const t=Math.min(1,(now-start)/duration);const eased=t*t*(3-2*t);robot.x=from.x+(x-from.x)*eased;robot.y=from.y+(y-from.y)*eased;draw();if(t<1)requestAnimationFrame(tick);else resolve();}requestAnimationFrame(tick);});
+}
 function scanRackVision(index){
  const p=rackPos[index],x0=Math.max(0,Math.floor(p.x-60)),y0=Math.max(0,Math.floor(p.y-58)),ww=120,hh=120;
  let redPixels=0;
  try{if(ctx){const pixels=ctx.getImageData(x0,y0,ww,hh).data;for(let i=0;i<pixels.length;i+=4){if(pixels[i]>145&&pixels[i]>pixels[i+1]*1.45&&pixels[i]>pixels[i+2]*1.25)redPixels++}}}catch(e){}
- const injected=selected!=='healthy'&&cases[selected].rack===index;
+ const injected=selected!=='healthy'&&cases[selected].rack===index&&!repaired;
  const visualDetected=injected;
  const finding={rack:String.fromCharCode(65+index),visual_fault_marker_detected:visualDetected,red_pixel_count:redPixels,scenario_sensor_anomaly:injected?cases[selected].name:'none detected',telemetry:{cpu_c:injected?cases[selected].cpu:54+index*3,inlet_c:injected?cases[selected].inlet:22+index,fan_rpm:injected?cases[selected].fan:7100-index*80,psu_output_w:injected?cases[selected].psu:680},confidence:visualDetected?'high':redPixels>3?'review':'low'};
  visionFindings.push(finding);
@@ -182,30 +186,27 @@ async function live(){
   const permitted=["restore_fan","improve_airflow","inspect_psu","no_action"];
   if(!body.simulation_action_permitted||!permitted.includes(action)){ $("modelStatus").textContent="SAFETY HOLD: server-side deterministic checks did not approve a simulation action. No simulated repair performed.";$("diagnosis").textContent+="\n\nSAFETY GATE: HOLD\nNo repair was performed.";speak("Safety hold. No simulated repair was performed.");return;}
   if(action==='no_action'){$('modelStatus').textContent='Healthy baseline verified; no repair needed.';$('diagnosis').textContent+='\\n\\nSIMULATION OUTCOME\\nNo repair required. Healthy baseline retained. No hardware action executed.';speak('The model recommendation and healthy readings agree. No repair was needed.');return;}
-  $('modelStatus').textContent='Applying model-matched simulated action: '+action;
-  setStatus('SIMULATED REPAIR');
-  speak('Starting simulated '+action.replaceAll('_',' ')+'.');
-  await new Promise(resolve=>setTimeout(resolve,1200));
-  const before={cpu_c:d.cpu,inlet_c:d.inlet,fan_rpm:d.fan,psu_output_w:d.psu};
-  const after={...before};
-  if(action==='restore_fan'){after.fan_rpm=7200;after.cpu_c=64;}
-  if(action==='improve_airflow'){after.inlet_c=25;after.cpu_c=62;}
-  if(action==='inspect_psu'){after.psu_output_w=680;}
+  $('modelStatus').textContent='Robot returning to Rack '+String.fromCharCode(65+d.rack)+' to perform an approved simulated action.';
+  setStatus('RETURNING TO RACK');setCoreState('MODEL PROPOSAL APPROVED BY SERVER-SIDE SAFETY GATE');
+  speak('Nemotron proposed '+action.replaceAll('_',' ')+'. The safety gate approved a simulation-only action. Returning to the affected rack.');
+  await moveRobotTo(rackPos[d.rack].x,430,950);
+  setStatus('SIMULATED REPAIR');$('modelStatus').textContent='Performing simulated corrective action at Rack '+String.fromCharCode(65+d.rack)+'…';
+  speak('Starting simulated '+action.replaceAll('_',' ')+'.');await new Promise(resolve=>setTimeout(resolve,1100));
+  const before={cpu_c:d.cpu,inlet_c:d.inlet,fan_rpm:d.fan,psu_output_w:d.psu};const after={...before};
+  if(action==='restore_fan'){after.fan_rpm=7200;after.cpu_c=64;}if(action==='improve_airflow'){after.inlet_c=25;after.cpu_c=62;}if(action==='inspect_psu'){after.psu_output_w=680;}
   const verified=(action==='restore_fan'&&after.fan_rpm>0&&after.cpu_c<80)||(action==='improve_airflow'&&after.inlet_c<30)||(action==='inspect_psu'&&after.psu_output_w>=500);
-  const outcome={action,before,after,verification:verified?'PASS':'FAIL',model:body.model||'reported by API',request_id:body.request_id||null,hardware_action_executed:false};
-  $('diagnosis').textContent+='\\n\\nSIMULATED ACTION & VERIFICATION\\n'+JSON.stringify(outcome,null,2);
-  $('modelStatus').textContent=verified?'SIMULATION VERIFIED: post-action telemetry passed the defined threshold.':'VERIFICATION FAILED: no success claim.';
-  setStatus(verified?'RECOVERY VERIFIED':'VERIFY FAILED');
-  speak(verified?'The model recommended '+action.replaceAll('_',' ')+'. Simulated telemetry passed verification. No physical hardware was changed.':'The simulated action failed verification. Human review is required.');
-  reportData={...reportData,live_model:body.model,live_request_id:body.request_id,live_diagnosis:body.diagnosis,simulated_action:action,simulation_outcome:outcome};
-  $('report').textContent=JSON.stringify(reportData,null,2);
+  if(verified){d.cpu=after.cpu_c;d.inlet=after.inlet_c;d.fan=after.fan_rpm;d.psu=after.psu_output_w;d.risk=12;d.severity='INFO';repaired=true;renderCase();}
+  const outcome={action,before,after,verification:verified?'PASS':'FAIL',model:body.model||'reported by API',request_id:body.request_id||null,hardware_action_executed:false,scope:'browser simulation only'};
+  $('diagnosis').textContent+='\\n\\nSIMULATED ACTION & VERIFICATION\\n'+JSON.stringify(outcome,null,2);$('modelStatus').textContent=verified?'SIMULATION VERIFIED: live telemetry panel updated and fault marker cleared.':'VERIFICATION FAILED: no success claim.';setStatus(verified?'RECOVERY VERIFIED':'VERIFY FAILED');setCoreState(verified?'SIMULATED RECOVERY VERIFIED · NO HARDWARE CONTROL':'VERIFICATION FAILED · HUMAN REVIEW REQUIRED');
+  speak(verified?'Rack '+String.fromCharCode(65+d.rack)+' simulated repair is complete. Updated sensor readings pass the verification threshold. No physical hardware was changed.':'The simulated action failed verification. Human review is required.');
+  reportData={...reportData,live_model:body.model,live_request_id:body.request_id,live_diagnosis:body.diagnosis,simulated_action:action,simulation_outcome:outcome};$('report').textContent=JSON.stringify(reportData,null,2);
  }catch(e){$('modelStatus').textContent='Request failed or backend unavailable. No automatic retry was made.';$('diagnosis').textContent='LIVE INFERENCE UNAVAILABLE\n\n'+String(e)+'\n\nUse the recorded advisory to continue the demo. No automatic retry was made.'}
  finally{$('liveBtn').disabled=false}
 }
-document.querySelectorAll('.scenario').forEach(b=>b.addEventListener('click',()=>{if(moving)return;selected=b.dataset.case;missionDone=false;route=[];reportData=null;$('missionTime').textContent='0.0s';setStatus('IDLE');$('report').textContent='Scenario changed. Run a mission to generate a fresh evidence record.';$('modelStatus').textContent='Scenario loaded locally. No model call made.';setCoreState('NETWORK ACTIVE · WAITING FOR INPUT');renderCase()}));
+document.querySelectorAll('.scenario').forEach(b=>b.addEventListener('click',()=>{if(moving)return;selected=b.dataset.case;missionDone=false;repaired=false;route=[];reportData=null;$('missionTime').textContent='0.0s';setStatus('IDLE');$('report').textContent='Scenario changed. Run a mission to generate a fresh evidence record.';$('modelStatus').textContent='Scenario loaded locally. No model call made.';setCoreState('NETWORK ACTIVE · WAITING FOR INPUT');renderCase()}));
 $('missionBtn').addEventListener('click',runMission);
 $('voiceBtn').addEventListener('click',()=>{voiceEnabled=!voiceEnabled;$('voiceBtn').textContent=voiceEnabled?'🔊 Voice: On':'🔇 Voice: Off';if(!voiceEnabled&&'speechSynthesis' in window)window.speechSynthesis.cancel();else speak('Voice narration enabled. I will announce each rack inspection finding.');});
-$('resetBtn').addEventListener('click',()=>{cancelAnimationFrame(raf);moving=false;missionDone=false;robot={x:90,y:530};route=[];visionFindings=[];elapsed=0;if('speechSynthesis' in window)window.speechSynthesis.cancel();$('missionTime').textContent='0.0s';setStatus('IDLE');$('missionBtn').disabled=false;$('missionBtn').textContent='▶ Inspect all three racks';$('report').textContent='No mission completed yet.';renderCase()});
+$('resetBtn').addEventListener('click',()=>{cancelAnimationFrame(raf);moving=false;missionDone=false;repaired=false;robot={x:90,y:530};route=[];visionFindings=[];elapsed=0;if('speechSynthesis' in window)window.speechSynthesis.cancel();$('missionTime').textContent='0.0s';setStatus('IDLE');$('missionBtn').disabled=false;$('missionBtn').textContent='▶ Inspect all three racks';$('report').textContent='No mission completed yet.';renderCase()});
 $('sensorBtn').addEventListener('click',()=>{if(moving)return;const d=cases[selected];const jitter=()=>Math.round((Math.random()*2-1)*2);d.cpu=Math.max(20,Math.min(99,d.cpu+jitter()));d.inlet=Math.max(18,Math.min(45,d.inlet+jitter()));if(selected!=='fan')d.fan=Math.max(0,d.fan+Math.round((Math.random()*2-1)*100));d.risk=Math.max(0,Math.min(100,d.risk+jitter()));$('modelStatus').textContent='Fresh synthetic sample generated locally. No model call made.';renderCase()});
 $('recordedBtn').addEventListener('click',recorded);$('liveBtn').addEventListener('click',live);
 $('downloadBtn').addEventListener('click',()=>{if(!reportData){alert('Run the inspection mission first to create a report.');return}const blob=new Blob([JSON.stringify(reportData,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='silicon-technician-physical-ai-mission.json';a.click();URL.revokeObjectURL(url)});
