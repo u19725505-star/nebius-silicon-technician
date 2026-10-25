@@ -1,6 +1,6 @@
 import os, json, time, uuid
 from datetime import datetime, timezone
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, send_file
 from openai import OpenAI
 
 app = Flask(__name__)
@@ -23,8 +23,12 @@ def diagnose_preflight():
 
 
 @app.get("/")
+def homepage():
+    return send_file(os.path.join(os.path.dirname(__file__), "docs", "index.html"))
+
+@app.get("/health")
 def health():
-    return jsonify({"service":"silicon-technician-diagnosis","status":"ready" if os.getenv("NEBIUS_API_KEY") else "needs_api_key","model":DEFAULT_MODEL,"live_inference_enabled":bool(os.getenv("NEBIUS_API_KEY")),"note":"Health endpoint does not make a model call."})
+    return jsonify({"service":"silicon-technician-judge-site","status":"ready" if os.getenv("NEBIUS_API_KEY") else "needs_api_key","model":DEFAULT_MODEL,"live_inference_enabled":bool(os.getenv("NEBIUS_API_KEY")),"note":"Health endpoint does not make a model call."})
 
 @app.post("/api/diagnose")
 def diagnose():
