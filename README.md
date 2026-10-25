@@ -70,3 +70,13 @@ Diagnoses use `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` through Nebius Token Facto
 ## License
 
 See `LICENSE`.
+
+## Physical AI Mission Lab
+
+An iPad-friendly, browser-based prototype for a human-supervised data-center inspection robot. Open the [Physical AI Mission Lab](https://u19725505-star.github.io/nebius-silicon-technician/physical-ai.html) to select simulated server-rack faults, inspect synthetic sensor readings, run a deterministic robot route, and export a mission evidence record.
+
+- **Simulation-only:** no physical robot, sensor, or server is connected.
+- **Local recorded advisory:** does not call a model and consumes no Token Factory inference credits.
+- **Live Nemotron inference:** optional, triggered only by the user after a confirmation prompt; sends simulated telemetry to the configured diagnosis API and may consume credits.
+- **Safety boundary:** model output is advisory only; route planning is deterministic; no physical hardware action is exposed.
+- **Scope:** this browser prototype demonstrates embodied-agent workflow concepts, not a physics-accurate robotics simulator. A separate robotics engine can be explored as a later extension.
