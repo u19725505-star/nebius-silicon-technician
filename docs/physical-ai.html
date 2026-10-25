@@ -101,7 +101,7 @@ function buildRoute(){
 let voiceEnabled=true,visionFindings=[];
 function speak(text){
  if(!voiceEnabled||!('speechSynthesis' in window))return;
- try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.94;u.pitch=1.02;window.speechSynthesis.speak(u)}catch(e){}
+ try{const u=new SpeechSynthesisUtterance(text);u.rate=.94;u.pitch=1.02;window.speechSynthesis.speak(u)}catch(e){}
 }
 function scanRackVision(index){
  const p=rackPos[index],x0=Math.max(0,Math.floor(p.x-60)),y0=Math.max(0,Math.floor(p.y-58)),ww=120,hh=120;
@@ -125,7 +125,7 @@ function runMission(){
  const waypoints=route.slice(1),segments=[];let total=0;let prev=route[0];
  for(const point of waypoints){const len=Math.hypot(point.x-prev.x,point.y-prev.y);segments.push({a:prev,b:point,len,start:total,end:total+len});total+=len;prev=point}
  const duration=Math.max(7000,total*7.5);
- const scanAt=[3,6,9];let nextScan=0;
+ const scanAt=[3,6,8];let nextScan=0;
  function tick(now){
   const t=Math.min(1,(now-startTime)/duration);elapsed=(now-startTime)/1000;$('missionTime').textContent=elapsed.toFixed(1)+'s';
   const dist=t*total,seg=segments.find(s=>dist<=s.end)||segments[segments.length-1],f=seg.len?(dist-seg.start)/seg.len:1;
