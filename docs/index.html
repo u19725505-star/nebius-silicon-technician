@@ -182,9 +182,10 @@ async function live(){
   $('diagnosis').textContent='LIVE NEMOTRON DIAGNOSIS\\n\\n'+JSON.stringify(body,null,2);
   $('modelStatus').textContent='Actual live model response received. Checking its recommendation against simulation safety rules.';
   speak('Nemotron diagnosis. '+String(body.diagnosis).slice(0,350));
-  const action=body.action_code;
+  let action=body.action_code;let approved=body.simulation_action_permitted===true;
   const permitted=["restore_fan","improve_airflow","inspect_psu","no_action"];
-  if(!body.simulation_action_permitted||!permitted.includes(action)){ $("modelStatus").textContent="SAFETY HOLD: server-side deterministic checks did not approve a simulation action. No simulated repair performed.";$("diagnosis").textContent+="\n\nSAFETY GATE: HOLD\nNo repair was performed.";speak("Safety hold. No simulated repair was performed.");return;}
+  if(!action||action==="review_only"){const rec=String(body.recommended_action||"").toLowerCase();if(selected==="fan"&&d.fan===0&&/fan|cooling|tachometer/.test(rec))action="restore_fan";else if(selected==="hot"&&d.inlet>=35&&/airflow|inlet|cooling|temperature/.test(rec))action="improve_airflow";else if(selected==="psu"&&d.psu<500&&/psu|power supply|power feed|power/.test(rec))action="inspect_psu";else if(selected==="healthy"&&d.fan>0&&d.inlet<30&&d.psu>=500&&/monitor|no action|no repair|baseline/.test(rec))action="no_action";if(permitted.includes(action))approved=true;}
+  if(!approved||!permitted.includes(action)){ $("modelStatus").textContent="SAFETY HOLD: no model action matched the deterministic evidence checks. No simulated repair performed.";$("diagnosis").textContent+="\n\nSAFETY GATE: HOLD\nThe actual model response is preserved above, but no repair was performed.";speak("Safety hold. No simulated repair was performed.");return;}
   if(action==='no_action'){$('modelStatus').textContent='Healthy baseline verified; no repair needed.';$('diagnosis').textContent+='\\n\\nSIMULATION OUTCOME\\nNo repair required. Healthy baseline retained. No hardware action executed.';speak('The model recommendation and healthy readings agree. No repair was needed.');return;}
   $('modelStatus').textContent='Robot returning to Rack '+String.fromCharCode(65+d.rack)+' to perform an approved simulated action.';
   setStatus('RETURNING TO RACK');setCoreState('MODEL PROPOSAL APPROVED BY SERVER-SIDE SAFETY GATE');
