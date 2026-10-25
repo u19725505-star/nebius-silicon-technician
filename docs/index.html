@@ -38,7 +38,7 @@
 <div class="stats"><div class="stat"><small>ROBOT STATE</small><b id="robotState">IDLE</b><em>Navigation controller</em></div><div class="stat"><small>TARGET RACK</small><b id="targetRack">RACK B</b><em id="targetWhy">Highest fault score</em></div><div class="stat"><small>MISSION TIME</small><b id="missionTime">0.0s</b><em>Simulated elapsed time</em></div></div>
 <p class="footnote">The robot animates along a computed 2D route to Rack A, Rack B, and Rack C. It reads simulated visual fault markers and synthetic sensor telemetry, while browser speech synthesis narrates findings. This is not a live camera feed, physics engine, or real robot.</p></section>
 <aside class="side">
-<section class="panel"><div class="eyebrow">02 / CAMERA VISION + SENSOR FUSION</div><h2>Environmental telemetry</h2><p class="muted" style="font-size:12px;margin-top:0">Synthetic sensor values update when a scenario is selected or sampled.</p><div class="readings">
+<section class="panel"><div class="eyebrow">02 / SIMULATED VISUAL MARKERS + SENSOR FUSION</div><h2>Environmental telemetry</h2><p class="muted" style="font-size:12px;margin-top:0">Synthetic sensor values update when a scenario is selected or sampled.</p><div class="readings">
 <div class="reading"><span>CPU temp</span><div class="bar"><span id="tempBar"></span></div><strong id="tempVal">71 °C</strong></div>
 <div class="reading"><span>Inlet temp</span><div class="bar"><span id="inletBar"></span></div><strong id="inletVal">24 °C</strong></div>
 <div class="reading"><span>Fan speed</span><div class="bar"><span id="fanBar"></span></div><strong id="fanVal">7200</strong></div>
@@ -135,16 +135,16 @@ function scanRackVision(index){
  const finding={rack:String.fromCharCode(65+index),visual_fault_marker_detected:visualDetected,red_pixel_count:redPixels,scenario_sensor_anomaly:injected?cases[selected].name:'none detected',telemetry:{cpu_c:injected?cases[selected].cpu:54+index*3,inlet_c:injected?cases[selected].inlet:22+index,fan_rpm:injected?cases[selected].fan:7100-index*80,psu_output_w:injected?cases[selected].psu:680},confidence:visualDetected?'high':redPixels>3?'review':'low'};
  visionFindings.push(finding);
  const speech=visualDetected?'Nemotron, visual inspection at Rack '+finding.rack+' detected a red fault indicator. The simulated sensor pattern is '+finding.scenario_sensor_anomaly+'. CPU '+finding.telemetry.cpu_c+' degrees Celsius. I recommend targeted diagnosis.': 'Nemotron, visual inspection at Rack '+finding.rack+' found no clear red fault marker. The rack appears nominal in this simulation. Continue inspection.';
- $('diagnosis').textContent='CAMERA VISION SCAN · RACK '+finding.rack+'\nRed pixels segmented: '+redPixels+'\nFault marker: '+(visualDetected?'DETECTED':'NOT DETECTED')+'\nSensor anomaly: '+finding.scenario_sensor_anomaly+'\n\nSpoken report: '+speech;
- $('modelStatus').textContent='Local computer-vision scan complete for Rack '+finding.rack+'. No model request made.';
+ $('diagnosis').textContent='SIMULATED VISUAL-MARKER CHECK · RACK '+finding.rack+'\nSVG fault marker state: '+(visualDetected?'DETECTED':'NOT DETECTED')+'\nSensor anomaly: '+finding.scenario_sensor_anomaly+'\n\nSpoken report: '+speech;
+ $('modelStatus').textContent='Local simulated visual-marker check complete for Rack '+finding.rack+'. No model request made.';
  speak(speech);
  return finding;
 }
 function runMission(){
  if(moving)return;
  if('speechSynthesis' in window)window.speechSynthesis.cancel();
- moving=true;missionDone=false;reportData=null;visionFindings=[];route=buildRoute();startTime=performance.now();elapsed=0;setStatus('NAVIGATING');$('missionBtn').disabled=true;$('missionBtn').textContent='Mission in progress…';setCoreState('NAVIGATING · CAMERA VISION ACTIVE');
- $('diagnosis').textContent='Robot is navigating to Rack A, Rack B, then Rack C. Camera vision scans each rack and voice reports findings. No model call is made automatically.';
+ moving=true;missionDone=false;reportData=null;visionFindings=[];route=buildRoute();startTime=performance.now();elapsed=0;setStatus('NAVIGATING');$('missionBtn').disabled=true;$('missionBtn').textContent='Mission in progress…';setCoreState('NAVIGATING · SIMULATED MARKER SCAN ACTIVE');
+ $('diagnosis').textContent='Robot is navigating to Rack A, Rack B, then Rack C. The simulation checks the rendered marker state at each rack and synthetic telemetry, then narrates findings. No model call is made automatically.';
  const waypoints=route.slice(1),segments=[];let total=0;let prev=route[0];
  for(const point of waypoints){const len=Math.hypot(point.x-prev.x,point.y-prev.y);segments.push({a:prev,b:point,len,start:total,end:total+len});total+=len;prev=point}
  const duration=Math.max(7000,total*7.5);
@@ -163,7 +163,7 @@ function runMission(){
    const d=cases[selected];
    reportData={project:'Silicon Technician — Physical AI Mission Lab',timestamp:new Date().toISOString(),mode:'browser_simulation_with_synthetic_visual_markers',scenario:d.name,selected_fault_rack:selected==='healthy'?null:'Rack '+String.fromCharCode(65+d.rack),rack_vision_findings:visionFindings,route:route.map(p=>({x:Math.round(p.x),y:Math.round(p.y)})),simulated_elapsed_seconds:Number(elapsed.toFixed(2)),spoken_reports_enabled:voiceEnabled,guardrails:{navigation:'deterministic local route',vision:'SVG-rendered simulated marker plus synthetic telemetry; no camera feed',physical_hardware_connected:false,hardware_action_executed:false,human_review_required:true}};
    $('missionBadge').textContent='ALL 3 RACKS SCANNED';$('missionTime').textContent=elapsed.toFixed(1)+'s';$('report').textContent=JSON.stringify(reportData,null,2);
-   $('diagnosis').textContent='THREE-RACK INSPECTION COMPLETE\n\n'+visionFindings.map(v=>'RACK '+v.rack+': '+(v.visual_fault_marker_detected?'FAULT MARKER DETECTED':'NO FAULT MARKER DETECTED')+'; red pixels='+v.red_pixel_count+'; scenario='+v.scenario_sensor_anomaly).join('\n')+'\n\nSimulated visual-marker checks ran locally. Spoken summaries were generated by browser speech synthesis. To ask Nemotron to interpret the complete scan, explicitly select “Run live Nemotron” below.';
+   $('diagnosis').textContent='THREE-RACK INSPECTION COMPLETE\n\n'+visionFindings.map(v=>'RACK '+v.rack+': '+(v.visual_fault_marker_detected?'FAULT MARKER DETECTED':'NO FAULT MARKER DETECTED')+'; marker='+(v.visual_fault_marker_detected?'visible':'absent')+'; scenario='+v.scenario_sensor_anomaly).join('\n')+'\n\nSimulated visual-marker checks ran locally. Spoken summaries were generated by browser speech synthesis. To ask Nemotron to interpret the complete scan, explicitly select “Run live Nemotron” below.';
    $('modelStatus').textContent='Three local visual scans completed. No model request made; Token Factory usage: 0 for this mission.';setCoreState('ALL RACKS SCANNED · READY FOR NEMOTRON REVIEW');renderCase();
   }
  }
