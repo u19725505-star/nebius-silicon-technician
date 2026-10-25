@@ -1,0 +1,12 @@
+{
+ "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+ "steps": [
+  "Server looks healthy with CPU at fifty seven point four Celsius and thirty seven point six Celsius headroom to critical. Inlet temperature is twenty four Celsius with eighteen Celsius headroom. Fan one runs at ninety one hundred three RPM and PSU one draws six hundred ninety nine watts, both OK. The management controller is an emulator and guardrails passed. No action needed.",
+  "Fan 3 is showing zero RPM and has dropped below the lower critical threshold. CPU temperature sits at eighty-eight point six Celsius with six point four degrees of headroom left before critical. Guardrails passed. I lit the blue locate LED so a technician can find the rack.",
+  "PSU 2 is showing zero watts output, critical status. The log shows power supply 2 output degraded with redundancy lost and a power redundancy warning. Guardrails passed. I lit the blue locate LED to identify the unit. Next checks are status LEDs, cable seating, and replacement.",
+  "I see the inlet temperature at 38.2 Celsius with 3.8 Celsius headroom to critical, triggering a warning. The log shows inlet temperature above the upper non-critical threshold. I checked cooling unit operation and airflow obstructions. Guardrails passed. No action was taken in this recording.",
+  "I see all six fans spinning near fifteen thousand RPM, which looks high at first glance. The maintenance note and event log both confirm a scheduled fan diagnostic is running, so the elevated speeds are expected. CPU temperature is holding steady at fifty seven point six Celsius. This is just routine maintenance, so I am not taking any action.",
+  "BMC readings look good with CPU at fifty eight point five C, GPU at sixty one point three C, inlet at twenty four point four C, fans near nine thousand RPM, and both PSUs at seven hundred five watts. Host core zero shows one hundred percent utilization with a scheduler delay of seventeen sixteen point four microseconds versus a baseline of nine point one percent and forty three point one microseconds. No maintenance is scheduled. The conclusion is host CPU starvation invisible to the BMC. My previous answer was flagged for human review because it quoted a ratio not in the data, and the action taken is none.",
+  "We ran sixty fresh cases from our simulator against the BMC emulator. Fixed rules caught twenty and Ultra cleared all sixty. No GPU server was involved. The processor measurement on the host and the guardrails are the real signals."
+ ]
+}
