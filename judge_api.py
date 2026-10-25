@@ -5,7 +5,7 @@ from openai import OpenAI
 
 app = Flask(__name__)
 BASE_URL = "https://api.tokenfactory.nebius.com/v1/"
-DEFAULT_MODEL = os.getenv("NEBIUS_MODEL", "nvidia/Nemotron-3-Ultra-550b-a55b")
+DEFAULT_MODEL = os.getenv("NEBIUS_MODEL", "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B")
 MAX_REQUESTS_PER_PROCESS = int(os.getenv("MAX_DIAGNOSES_PER_PROCESS", "25"))
 requests_seen = 0
 
