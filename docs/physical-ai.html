@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07111c">
+<title>Silicon Technician | Physical AI Mission Lab</title>
+<style>
+:root{color-scheme:dark;--bg:#06101a;--panel:#0b1b2a;--line:#21465a;--cyan:#61eaff;--green:#7af0b8;--amber:#ffc56e;--red:#ff6378;--muted:#91aabd;--text:#e8f7ff}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#153c52 0,transparent 52%),var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap{max-width:1400px;margin:auto;padding:20px}header{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--line)}.brand{display:flex;gap:12px;align-items:center}.logo{border:1px solid var(--cyan);border-radius:50%;width:46px;height:46px;display:grid;place-items:center;color:var(--cyan);font-weight:900;box-shadow:0 0 25px #61eaff28}.eyebrow,.tag{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan)}h1{font-size:clamp(17px,2.5vw,25px);letter-spacing:.06em;margin:1px 0}.muted{color:var(--muted)}.tag{border:1px solid #2b5a70;border-radius:30px;padding:7px 10px}.grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,.9fr);gap:16px;margin-top:18px}.panel{border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,#0c1d2cee,#07131eee);padding:18px;min-width:0;box-shadow:0 12px 35px #0002}.panel h2{font-size:18px;margin:0 0 6px}.scenehead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}.scene{position:relative;overflow:hidden;border:1px solid #214a5d;border-radius:13px;background:#06121d}.scene canvas{display:block;width:100%;height:auto;aspect-ratio:1.52}.scenefoot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:9px 12px;background:#081724;border-top:1px solid #17394c;font-size:11px;color:var(--muted)}button,select{font:inherit}button{cursor:pointer;border:1px solid #28576d;border-radius:9px;background:#10283a;color:var(--text);padding:10px 13px;transition:.18s}button:hover{border-color:var(--cyan);box-shadow:0 0 17px #61eaff20}button:disabled{opacity:.5;cursor:wait}.primary{background:linear-gradient(110deg,#087a9c,#1558a0);border-color:var(--cyan);font-weight:750}.selected{border-color:var(--cyan)!important;background:#123449!important}.scenarioGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:12px 0}.scenario{padding:11px 8px;text-align:left;min-height:75px}.scenario b{display:block;font-size:12px}.scenario small{color:var(--muted);font-size:10px}.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.stat{background:#071521;border:1px solid #173c50;border-radius:10px;padding:11px}.stat small{display:block;font-size:9px;letter-spacing:.12em;color:var(--muted)}.stat b{display:block;font-size:22px;margin-top:3px}.stat em{font-size:10px;color:var(--muted);font-style:normal}.side{display:flex;flex-direction:column;gap:14px}.status{display:flex;gap:10px;align-items:center;padding:11px;border:1px solid #21465a;border-radius:10px;background:#081724}.led{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 12px #7af0b855;flex-shrink:0}.led.warn{background:var(--amber)}.led.bad{background:var(--red);box-shadow:0 0 12px #ff637855}.readings{display:grid;gap:10px;margin-top:13px}.reading{display:grid;grid-template-columns:90px 1fr 55px;align-items:center;gap:8px;font-size:12px}.bar{height:7px;background:#183244;border-radius:9px;overflow:hidden}.bar span{display:block;height:100%;width:20%;background:var(--cyan);border-radius:9px;transition:width .4s}.reading strong{text-align:right;font-variant-numeric:tabular-nums}.console{background:#06131e;border:1px solid #193e52;border-radius:10px;padding:12px;min-height:135px;white-space:pre-wrap;color:#c7e6f4;font-size:12px;overflow-wrap:anywhere}.steps{display:grid;gap:8px;margin-top:12px}.step{display:flex;gap:10px;align-items:flex-start;border:1px solid #193e52;border-radius:10px;padding:10px;background:#081724}.step .n{width:25px;height:25px;display:grid;place-items:center;border:1px solid #2d6278;border-radius:50%;color:var(--cyan);flex-shrink:0}.step b{font-size:12px}.step p{margin:3px 0 0;color:var(--muted);font-size:11px}.footnote{font-size:11px;color:var(--muted);margin-top:12px}.divider{height:1px;background:#18384b;margin:14px 0}.full{grid-column:1/-1}.bottomgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.pill{display:inline-block;border:1px solid #2b5267;border-radius:30px;padding:4px 8px;color:var(--cyan);font-size:10px}.smallbtn{padding:7px 10px;font-size:12px}.good{color:var(--green)}.warning{color:var(--amber)}.danger{color:var(--red)}@media(max-width:900px){.grid{grid-template-columns:1fr}.scenarioGrid{grid-template-columns:repeat(2,1fr)}.bottomgrid{grid-template-columns:1fr}}@media(max-width:520px){.wrap{padding:11px}.panel{padding:13px}.stats{grid-template-columns:repeat(3,1fr)}.stat{padding:8px}.stat b{font-size:18px}.reading{grid-template-columns:75px 1fr 52px}.scene canvas{aspect-ratio:1.08}.tag{font-size:9px}}
+</style></head>
+<body><div class="wrap">
+<header><div class="brand"><div class="logo">ST</div><div><div class="eyebrow">Embodied systems · supervised autonomy</div><h1>SILICON TECHNICIAN <span style="color:var(--cyan)">/ PHYSICAL AI MISSION LAB</span></h1><div class="muted" style="font-size:12px">Autonomous data-center inspection · browser simulation</div></div></div><div class="tag">SIMULATION MODE · NO HARDWARE CONNECTED</div></header>
+<div class="grid">
+<section class="panel"><div class="scenehead"><div><div class="eyebrow">01 / PERCEPTION & NAVIGATION</div><h2>Virtual data-center floor</h2><div class="muted" style="font-size:12px">Three racks · sensor-driven target selection · deterministic path planner</div></div><span id="missionBadge" class="pill">MISSION READY</span></div>
+<div class="scene"><canvas id="world" width="1000" height="650" aria-label="Interactive top-down data center robot simulation"></canvas><div class="scenefoot"><span>● <span style="color:var(--cyan)">Robot pose / route</span>　● <span style="color:var(--red)">Fault evidence</span></span><span id="pose">POSE x: 90 · y: 530</span></div></div>
+<div class="scenarioGrid" id="scenarioButtons">
+<button class="scenario selected" data-case="fan"><b>01 · Fan failure</b><small>Rack B · 0 RPM</small></button>
+<button class="scenario" data-case="hot"><b>02 · Hot inlet</b><small>Rack C · 39 °C</small></button>
+<button class="scenario" data-case="psu"><b>03 · PSU anomaly</b><small>Rack A · power dip</small></button>
+<button class="scenario" data-case="healthy"><b>04 · Healthy run</b><small>Control condition</small></button>
+</div>
+<div class="controls"><button class="primary" id="missionBtn">▶ Run inspection mission</button><button id="resetBtn">↺ Reset robot</button><button id="sensorBtn">⟳ Refresh sensor sample</button></div>
+<div class="stats"><div class="stat"><small>ROBOT STATE</small><b id="robotState">IDLE</b><em>Navigation controller</em></div><div class="stat"><small>TARGET RACK</small><b id="targetRack">RACK B</b><em id="targetWhy">Highest fault score</em></div><div class="stat"><small>MISSION TIME</small><b id="missionTime">0.0s</b><em>Simulated elapsed time</em></div></div>
+<p class="footnote">The robot follows a computed 2D route and reads newly generated scenario telemetry at its destination. This is a browser simulation, not a physics engine or real robot.</p></section>
+<aside class="side">
+<section class="panel"><div class="eyebrow">02 / SENSOR FUSION</div><h2>Environmental telemetry</h2><p class="muted" style="font-size:12px;margin-top:0">Synthetic sensor values update when a scenario is selected or sampled.</p><div class="readings">
+<div class="reading"><span>CPU temp</span><div class="bar"><span id="tempBar"></span></div><strong id="tempVal">71 °C</strong></div>
+<div class="reading"><span>Inlet temp</span><div class="bar"><span id="inletBar"></span></div><strong id="inletVal">24 °C</strong></div>
+<div class="reading"><span>Fan speed</span><div class="bar"><span id="fanBar"></span></div><strong id="fanVal">7200</strong></div>
+<div class="reading"><span>PSU output</span><div class="bar"><span id="psuBar"></span></div><strong id="psuVal">680 W</strong></div>
+<div class="reading"><span>Risk score</span><div class="bar"><span id="riskBar"></span></div><strong id="riskVal">84%</strong></div></div>
+<div class="divider"></div><div id="sensorStatus" class="status"><span class="led warn" id="sensorLed"></span><div><b id="sensorHeadline">Anomaly candidate</b><div id="sensorDesc" class="muted" style="font-size:11px">Fan tachometer below expected range.</div></div></div></section>
+<section class="panel"><div class="eyebrow">03 / NEMOTRON REASONING</div><h2>Diagnosis console</h2><p class="muted" style="font-size:12px;margin-top:0">Recorded advisory is free to explore. Live inference is opt-in and may consume Token Factory credits.</p>
+<div class="controls" style="margin-top:0"><button class="primary" id="recordedBtn">Show recorded advisory</button><button id="liveBtn">Run live Nemotron</button></div>
+<div id="modelStatus" class="muted" style="font-size:11px;margin:10px 0">No inference requested. Scenario selection does not call the model.</div>
+<div class="console" id="diagnosis">Awaiting mission evidence.
+
+Choose a scenario, run the inspection, then review the advisory. No model call has been made.</div>
+<div class="footnote">Live inference sends only the selected scenario label and five numeric simulated telemetry values to the configured diagnosis API. No physical controls are exposed.</div></section>
+</aside>
+<section class="panel full"><div class="bottomgrid"><div><div class="eyebrow">04 / SAFETY ENVELOPE</div><h2>Action proposal ≠ action authorization</h2><div class="steps">
+<div class="step"><span class="n">1</span><div><b>Evidence bounded</b><p>Sensor payload is generated locally; model cannot access the robot or host.</p></div></div>
+<div class="step"><span class="n">2</span><div><b>Deterministic guard</b><p>Navigation and collision clearance are controlled by local simulation logic, not free-form model output.</p></div></div>
+<div class="step"><span class="n">3</span><div><b>Human review required</b><p>Any real-world maintenance or hardware action would require a separate, authorized control system and operator approval.</p></div></div></div></div>
+<div><div class="eyebrow">05 / MISSION EVIDENCE</div><h2>Inspection record</h2><div id="report" class="console">No mission completed yet. Run the inspection to create a local evidence record.</div><div class="controls"><button id="downloadBtn">↓ Export mission JSON</button><button id="printBtn">Print / save PDF</button></div><div class="footnote">Reports are generated in your browser. Exporting does not call the model or upload a file.</div></div></div></section>
+</div><footer class="footnote" style="border-top:1px solid #18384b;padding-top:14px;margin-top:16px">Silicon Technician · Physical AI prototype · Simulated environment only · No physical hardware actions · Human-supervised maintenance</footer>
+</div>
+<script>
+(function(){
+const canvas=document.getElementById('world'),ctx=canvas.getContext('2d');
+const cases={
+ fan:{name:'Fan failure',rack:1,cpu:91,inlet:25,fan:0,psu:690,risk:96,scenario:'fan',source:'simulated fan tachometer and thermal telemetry',summary:'Rack B shows a zero-RPM fan reading and elevated CPU temperature.',action:'Inspect cooling redundancy and verify the fan tachometer; do not issue a remote hardware command.',severity:'CRITICAL'},
+ hot:{name:'Hot inlet',rack:2,cpu:86,inlet:39,fan:6900,psu:680,risk:88,scenario:'hot',source:'simulated inlet-temperature and CPU telemetry',summary:'Rack C inlet temperature is elevated, with secondary CPU thermal stress.',action:'Inspect airflow path and adjacent cooling supply; confirm with a second sensor before maintenance.',severity:'WARNING'},
+ psu:{name:'PSU anomaly',rack:0,cpu:67,inlet:23,fan:7100,psu:390,risk:83,scenario:'psu',source:'simulated power-supply output telemetry',summary:'Rack A PSU output is below the expected operating band.',action:'Compare redundant PSU readings and check the power feed with an authorized technician.',severity:'WARNING'},
+ healthy:{name:'Healthy run',rack:0,cpu:54,inlet:22,fan:7200,psu:680,risk:7,scenario:'healthy',source:'simulated baseline telemetry',summary:'No significant anomaly is present in this sampled baseline.',action:'Continue passive monitoring and retain the sample as a baseline.',severity:'INFO'}
+};
+let selected='fan',robot={x:90,y:530},route=[],moving=false,startTime=0,elapsed=0,missionDone=false,reportData=null,raf=0;
+const rackPos=[{x:280,y:190,label:'RACK A'},{x:500,y:190,label:'RACK B'},{x:720,y:190,label:'RACK C'}];
+const $=id=>document.getElementById(id);
+function draw(){
+ const w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);
+ ctx.fillStyle='#06121d';ctx.fillRect(0,0,w,h);
+ // floor tiles
+ ctx.strokeStyle='#122b3b';ctx.lineWidth=1;
+ for(let x=0;x<w;x+=50){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+ for(let y=0;y<h;y+=50){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+ // lane boundaries
+ ctx.setLineDash([10,9]);ctx.strokeStyle='#285065';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(90,430);ctx.lineTo(900,430);ctx.stroke();ctx.setLineDash([]);
+ ctx.fillStyle='#7995a8';ctx.font='13px system-ui';ctx.fillText('INSPECTION AISLE / SAFE TRAVEL LANE',340,458);
+ rackPos.forEach((p,i)=>{
+   const fault=cases[selected].rack===i&&selected!=='healthy';
+   ctx.fillStyle=fault?'#321b27':'#0c2635';ctx.strokeStyle=fault?'#ff6378':'#2a6077';ctx.lineWidth=2;
+   roundRect(ctx,p.x-72,p.y-70,144,165,9);ctx.fill();ctx.stroke();
+   ctx.fillStyle='#142f40';ctx.fillRect(p.x-58,p.y-55,116,135);
+   for(let n=0;n<4;n++){ctx.fillStyle=fault&&n===2?'#ff6378':'#34728b';ctx.fillRect(p.x-48,p.y-43+n*30,96,17);ctx.fillStyle='#7af0b8';ctx.beginPath();ctx.arc(p.x+37,p.y-34+n*30,3,0,Math.PI*2);ctx.fill()}
+   if(fault){ctx.strokeStyle='#ff6378';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y-85,14,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#ff6378';ctx.font='bold 12px system-ui';ctx.fillText('FAULT',p.x-20,p.y-108)}
+   ctx.fillStyle='#d8edf7';ctx.font='bold 15px system-ui';ctx.fillText(p.label,p.x-34,p.y+118);
+   ctx.fillStyle='#8caec0';ctx.font='11px system-ui';ctx.fillText(fault?cases[selected].name:'Nominal',p.x-34,p.y+136);
+ });
+ // route
+ if(route.length){ctx.beginPath();ctx.moveTo(route[0].x,route[0].y);route.forEach(p=>ctx.lineTo(p.x,p.y));ctx.strokeStyle='#61eaff';ctx.lineWidth=4;ctx.setLineDash([9,7]);ctx.stroke();ctx.setLineDash([]);route.forEach(p=>{ctx.fillStyle='#61eaff';ctx.beginPath();ctx.arc(p.x,p.y,5,0,Math.PI*2);ctx.fill()})}
+ // robot
+ ctx.save();ctx.translate(robot.x,robot.y);ctx.fillStyle='#06121d';ctx.strokeStyle='#61eaff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,24,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#61eaff';ctx.beginPath();ctx.arc(0,-3,9,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#7af0b8';ctx.beginPath();ctx.moveTo(-12,16);ctx.lineTo(12,16);ctx.stroke();ctx.restore();
+ $('pose').textContent='POSE x: '+Math.round(robot.x)+' · y: '+Math.round(robot.y);
+}
+function roundRect(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function renderCase(){
+ const d=cases[selected];
+ $('targetRack').textContent='RACK '+String.fromCharCode(65+d.rack);
+ $('targetWhy').textContent=selected==='healthy'?'Baseline / patrol':'Highest anomaly score';
+ $('tempVal').textContent=d.cpu+' °C';$('inletVal').textContent=d.inlet+' °C';$('fanVal').textContent=d.fan+' RPM';$('psuVal').textContent=d.psu+' W';$('riskVal').textContent=d.risk+'%';
+ $('tempBar').style.width=Math.min(100,d.cpu)+'%';$('inletBar').style.width=Math.min(100,d.inlet*2)+'%';$('fanBar').style.width=Math.min(100,d.fan/80)+'%';$('psuBar').style.width=Math.min(100,d.psu/8)+'%';$('riskBar').style.width=d.risk+'%';
+ const critical=d.severity==='CRITICAL',warn=d.severity==='WARNING';
+ $('sensorLed').className='led '+(critical?'bad':warn?'warn':'');$('sensorHeadline').textContent=critical?'Critical anomaly candidate':warn?'Elevated risk':'Baseline within expected band';
+ $('sensorDesc').textContent=selected==='fan'?'Fan tachometer reports zero RPM; CPU temperature is elevated.':selected==='hot'?'Inlet air is above the configured comfort band.':selected==='psu'?'PSU output is lower than expected for this scenario.':'No high-risk sensor pattern detected in this sample.';
+ $('missionBadge').textContent=missionDone?'MISSION COMPLETE':'MISSION READY';$('missionBadge').style.color=critical?'var(--red)':warn?'var(--amber)':'var(--green)';
+ document.querySelectorAll('.scenario').forEach(b=>b.classList.toggle('selected',b.dataset.case===selected));
+ draw();
+}
+function setStatus(s){$('robotState').textContent=s}
+function buildRoute(){
+ const d=cases[selected],p=rackPos[d.rack];
+ // A transparent, deterministic route around rack faces and into the aisle.
+ return [{x:robot.x,y:robot.y},{x:robot.x,y:430},{x:p.x,y:430},{x:p.x,y:p.y+105}];
+}
+function runMission(){
+ if(moving)return;
+ moving=true;missionDone=false;reportData=null;route=buildRoute();startTime=performance.now();elapsed=0;setStatus('NAVIGATING');$('missionBtn').disabled=true;$('missionBtn').textContent='Mission in progress…';$('coreState').textContent='MISSION ACTIVE · SENSOR FUSION';
+ $('diagnosis').textContent='Mission running. The robot is following a deterministic aisle route to '+$('targetRack').textContent+'.\nNo model call has been made.';
+ const segments=[];let total=0;for(let i=1;i<route.length;i++){const a=route[i-1],b=route[i],len=Math.hypot(b.x-a.x,b.y-a.y);segments.push({a,b,len,start:total,end:total+len});total+=len}
+ const duration=Math.max(2200,total*5.5);
+ function tick(now){
+  const t=Math.min(1,(now-startTime)/duration);elapsed=(now-startTime)/1000;$('missionTime').textContent=elapsed.toFixed(1)+'s';
+  const dist=t*total,seg=segments.find(s=>dist<=s.end)||segments[segments.length-1],f=seg.len?(dist-seg.start)/seg.len:1;
+  robot.x=seg.a.x+(seg.b.x-seg.a.x)*f;robot.y=seg.a.y+(seg.b.y-seg.a.y)*f;draw();
+  if(t<1){raf=requestAnimationFrame(tick)}else{
+   moving=false;missionDone=true;setStatus('INSPECTING');$('missionBtn').disabled=false;$('missionBtn').textContent='▶ Run inspection again';
+   const d=cases[selected],rack=String.fromCharCode(65+d.rack);
+   reportData={project:'Silicon Technician — Physical AI Mission Lab',timestamp:new Date().toISOString(),mode:'browser_simulation',scenario:d.name,selected_rack:'Rack '+rack,telemetry:{cpu_c:d.cpu,inlet_c:d.inlet,fan1_rpm:d.fan,psu_output_w:d.psu},risk_score_percent:d.risk,robot_route:route.map(p=>({x:Math.round(p.x),y:Math.round(p.y)})),simulated_elapsed_seconds:Number(elapsed.toFixed(2)),diagnosis:d.summary,recommended_action:d.action,guardrails:{navigation:'deterministic local route',collision_policy:'aisle-only route; rack face approached from safe aisle',physical_hardware_connected:false,hardware_action_executed:false,human_review_required:true},evidence_source:d.source};
+   setStatus('AT TARGET');$('missionBadge').textContent='MISSION COMPLETE';$('missionTime').textContent=elapsed.toFixed(1)+'s';
+   $('report').textContent=JSON.stringify(reportData,null,2);$('diagnosis').textContent='RECORDED ADVISORY · NO MODEL CALL\n\n'+d.severity+': '+d.summary+'\n\nEvidence: CPU '+d.cpu+' °C; inlet '+d.inlet+' °C; fan '+d.fan+' RPM; PSU '+d.psu+' W.\n\nRecommended next step: '+d.action+'\n\nHuman review required. No hardware action executed.';
+   $('modelStatus').textContent='Recorded local advisory displayed. Token Factory usage: 0 for this action.';$('coreState').textContent='INSPECTION COMPLETE · HUMAN REVIEW REQUIRED';renderCase();
+  }
+ }
+ raf=requestAnimationFrame(tick);
+}
+function recorded(){const d=cases[selected];$('diagnosis').textContent='RECORDED ADVISORY · NO MODEL CALL\n\n'+d.severity+': '+d.summary+'\n\nEvidence: CPU '+d.cpu+' °C; inlet '+d.inlet+' °C; fan '+d.fan+' RPM; PSU '+d.psu+' W.\n\nRecommended next step: '+d.action+'\n\nThis is a local example advisory, not a model-generated answer. Human review required; no hardware action executed.';$('modelStatus').textContent='Recorded advisory. No network request made; Token Factory usage: 0.'}
+async function live(){
+ const d=cases[selected];
+ if(!confirm('Run a live Nemotron diagnosis using simulated telemetry? This sends one request to the configured backend and may consume Token Factory credits. Continue?'))return;
+ $('liveBtn').disabled=true;$('modelStatus').textContent='Sending one explicitly requested inference request…';$('diagnosis').textContent='Waiting for the configured diagnosis API. No hardware action can be executed.';
+ try{
+  const res=await fetch('https://silicon-technician-judge-api.onrender.com/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scenario:d.scenario,scenario_name:d.name,source:d.source,telemetry:{cpu_c:d.cpu,thermal_headroom_c:Math.max(0,100-d.cpu),inlet_c:d.inlet,fan1_rpm:d.fan,psu_output_w:d.psu}})});
+  const body=await res.json();$('diagnosis').textContent=JSON.stringify(body,null,2);$('modelStatus').textContent=res.ok?'Live API response received. Inspect model output and guardrails; no hardware action executed.':'Live inference failed (HTTP '+res.status+'). No automatic retry was made.';
+ }catch(e){$('modelStatus').textContent='Request failed or backend unavailable. No automatic retry was made.';$('diagnosis').textContent='LIVE INFERENCE UNAVAILABLE\n\n'+String(e)+'\n\nUse the recorded advisory to continue the demo. No automatic retry was made.'}
+ finally{$('liveBtn').disabled=false}
+}
+document.querySelectorAll('.scenario').forEach(b=>b.addEventListener('click',()=>{if(moving)return;selected=b.dataset.case;missionDone=false;route=[];reportData=null;$('missionTime').textContent='0.0s';setStatus('IDLE');$('report').textContent='Scenario changed. Run a mission to generate a fresh evidence record.';$('modelStatus').textContent='Scenario loaded locally. No model call made.';$('coreState').textContent='NETWORK ACTIVE · WAITING FOR INPUT';renderCase()}));
+$('missionBtn').addEventListener('click',runMission);
+$('resetBtn').addEventListener('click',()=>{cancelAnimationFrame(raf);moving=false;missionDone=false;robot={x:90,y:530};route=[];elapsed=0;$('missionTime').textContent='0.0s';setStatus('IDLE');$('missionBtn').disabled=false;$('missionBtn').textContent='▶ Run inspection mission';$('report').textContent='No mission completed yet.';renderCase()});
+$('sensorBtn').addEventListener('click',()=>{if(moving)return;const d=cases[selected];const jitter=()=>Math.round((Math.random()*2-1)*2);d.cpu=Math.max(20,Math.min(99,d.cpu+jitter()));d.inlet=Math.max(18,Math.min(45,d.inlet+jitter()));if(selected!=='fan')d.fan=Math.max(0,d.fan+Math.round((Math.random()*2-1)*100));d.risk=Math.max(0,Math.min(100,d.risk+jitter()));$('modelStatus').textContent='Fresh synthetic sample generated locally. No model call made.';renderCase()});
+$('recordedBtn').addEventListener('click',recorded);$('liveBtn').addEventListener('click',live);
+$('downloadBtn').addEventListener('click',()=>{if(!reportData){alert('Run the inspection mission first to create a report.');return}const blob=new Blob([JSON.stringify(reportData,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='silicon-technician-physical-ai-mission.json';a.click();URL.revokeObjectURL(url)});
+$('printBtn').addEventListener('click',()=>window.print());
+renderCase();
+})();
+</script></body></html>
