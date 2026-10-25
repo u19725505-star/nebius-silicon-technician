@@ -52,7 +52,8 @@ const cases={
 };
 let selected='fan',robot={x:90,y:530},route=[],moving=false,startTime=0,elapsed=0,missionDone=false,reportData=null,raf=0;
 const rackPos=[{x:280,y:190,label:'RACK A'},{x:500,y:190,label:'RACK B'},{x:720,y:190,label:'RACK C'}];
-const $=id=>document.getElementById(id);\nfunction setCoreState(text){const el=$('coreState');if(el)el.textContent=text;}
+const $=id=>document.getElementById(id);
+function setCoreState(text){const el=$('coreState');if(el)el.textContent=text;}
 function draw(){
  const w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);
  ctx.fillStyle='#06121d';ctx.fillRect(0,0,w,h);
