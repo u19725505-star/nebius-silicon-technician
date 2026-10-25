@@ -7,7 +7,7 @@
 <body><div class="wrap">
 <header><div class="brand"><div class="logo">ST</div><div><div class="eyebrow">Embodied systems · supervised autonomy</div><h1>SILICON TECHNICIAN <span style="color:var(--cyan)">/ PHYSICAL AI MISSION LAB</span></h1><div class="muted" style="font-size:12px">Autonomous data-center inspection · browser simulation</div></div></div><div class="tag">SIMULATION MODE · NO HARDWARE CONNECTED</div></header>
 <div class="grid">
-<section class="panel"><div class="scenehead"><div><div class="eyebrow">01 / PERCEPTION & NAVIGATION</div><h2>Virtual data-center floor</h2><div class="muted" style="font-size:12px">All three racks · visual anomaly detection · speech narration · deterministic path planner</div></div><span id="missionBadge" class="pill">MISSION READY</span></div>
+<section class="panel"><div class="scenehead"><div><div class="eyebrow">01 / PERCEPTION & NAVIGATION</div><h2>Virtual data-center floor</h2><div class="muted" style="font-size:12px">All three racks · simulated visual fault markers · speech narration · deterministic path planner</div></div><span id="missionBadge" class="pill">MISSION READY</span></div>
 <div class="scene"><canvas id="world" width="1000" height="650" aria-label="Hidden compatibility canvas"></canvas>
 <svg id="floorSvg" class="floor-svg" viewBox="0 0 1000 650" role="img" aria-label="Virtual data center with three racks and moving inspection robot">
 <defs><pattern id="floorGrid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="#173247" stroke-width="1"/></pattern><filter id="robotGlow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
@@ -26,7 +26,7 @@
 </div>
 <div class="controls"><button class="primary" id="missionBtn">▶ Inspect all three racks</button><button id="voiceBtn">🔊 Voice: On</button><button id="resetBtn">↺ Reset robot</button><button id="sensorBtn">⟳ Refresh sensor sample</button></div>
 <div class="stats"><div class="stat"><small>ROBOT STATE</small><b id="robotState">IDLE</b><em>Navigation controller</em></div><div class="stat"><small>TARGET RACK</small><b id="targetRack">RACK B</b><em id="targetWhy">Highest fault score</em></div><div class="stat"><small>MISSION TIME</small><b id="missionTime">0.0s</b><em>Simulated elapsed time</em></div></div>
-<p class="footnote">The robot physically animates along a computed 2D route to Rack A, Rack B, and Rack C, scanning each rack. Browser color-segmentation vision detects red fault indicators; speech synthesis narrates findings. This is a browser simulation, not a physics engine or real robot.</p></section>
+<p class="footnote">The robot animates along a computed 2D route to Rack A, Rack B, and Rack C. It reads simulated visual fault markers and synthetic sensor telemetry, while browser speech synthesis narrates findings. This is not a live camera feed, physics engine, or real robot.</p></section>
 <aside class="side">
 <section class="panel"><div class="eyebrow">02 / CAMERA VISION + SENSOR FUSION</div><h2>Environmental telemetry</h2><p class="muted" style="font-size:12px;margin-top:0">Synthetic sensor values update when a scenario is selected or sampled.</p><div class="readings">
 <div class="reading"><span>CPU temp</span><div class="bar"><span id="tempBar"></span></div><strong id="tempVal">71 °C</strong></div>
@@ -126,7 +126,7 @@ function runMission(){
  const waypoints=route.slice(1),segments=[];let total=0;let prev=route[0];
  for(const point of waypoints){const len=Math.hypot(point.x-prev.x,point.y-prev.y);segments.push({a:prev,b:point,len,start:total,end:total+len});total+=len;prev=point}
  const duration=Math.max(7000,total*7.5);
- const scanAt=[3,6,8];let nextScan=0;
+ const scanAt=[2,5,8];let nextScan=0;
  function tick(now){
   const t=Math.min(1,(now-startTime)/duration);elapsed=(now-startTime)/1000;$('missionTime').textContent=elapsed.toFixed(1)+'s';
   const dist=t*total,seg=segments.find(s=>dist<=s.end)||segments[segments.length-1],f=seg.len?(dist-seg.start)/seg.len:1;
@@ -139,9 +139,9 @@ function runMission(){
   if(t<1){raf=requestAnimationFrame(tick)}else{
    moving=false;missionDone=true;setStatus('MISSION COMPLETE');$('missionBtn').disabled=false;$('missionBtn').textContent='▶ Run three-rack inspection again';
    const d=cases[selected];
-   reportData={project:'Silicon Technician — Physical AI Mission Lab',timestamp:new Date().toISOString(),mode:'browser_simulation_with_color_segmentation_vision',scenario:d.name,selected_fault_rack:selected==='healthy'?null:'Rack '+String.fromCharCode(65+d.rack),rack_vision_findings:visionFindings,route:route.map(p=>({x:Math.round(p.x),y:Math.round(p.y)})),simulated_elapsed_seconds:Number(elapsed.toFixed(2)),spoken_reports_enabled:voiceEnabled,guardrails:{navigation:'deterministic local route',vision:'SVG-rendered simulated marker plus synthetic telemetry; no camera feed',physical_hardware_connected:false,hardware_action_executed:false,human_review_required:true}};
+   reportData={project:'Silicon Technician — Physical AI Mission Lab',timestamp:new Date().toISOString(),mode:'browser_simulation_with_synthetic_visual_markers',scenario:d.name,selected_fault_rack:selected==='healthy'?null:'Rack '+String.fromCharCode(65+d.rack),rack_vision_findings:visionFindings,route:route.map(p=>({x:Math.round(p.x),y:Math.round(p.y)})),simulated_elapsed_seconds:Number(elapsed.toFixed(2)),spoken_reports_enabled:voiceEnabled,guardrails:{navigation:'deterministic local route',vision:'SVG-rendered simulated marker plus synthetic telemetry; no camera feed',physical_hardware_connected:false,hardware_action_executed:false,human_review_required:true}};
    $('missionBadge').textContent='ALL 3 RACKS SCANNED';$('missionTime').textContent=elapsed.toFixed(1)+'s';$('report').textContent=JSON.stringify(reportData,null,2);
-   $('diagnosis').textContent='THREE-RACK INSPECTION COMPLETE\n\n'+visionFindings.map(v=>'RACK '+v.rack+': '+(v.visual_fault_marker_detected?'FAULT MARKER DETECTED':'NO FAULT MARKER DETECTED')+'; red pixels='+v.red_pixel_count+'; scenario='+v.scenario_sensor_anomaly).join('\n')+'\n\nComputer vision ran locally. Spoken summaries were generated by browser speech synthesis. To ask Nemotron to interpret the complete scan, explicitly select “Run live Nemotron” below.';
+   $('diagnosis').textContent='THREE-RACK INSPECTION COMPLETE\n\n'+visionFindings.map(v=>'RACK '+v.rack+': '+(v.visual_fault_marker_detected?'FAULT MARKER DETECTED':'NO FAULT MARKER DETECTED')+'; red pixels='+v.red_pixel_count+'; scenario='+v.scenario_sensor_anomaly).join('\n')+'\n\nSimulated visual-marker checks ran locally. Spoken summaries were generated by browser speech synthesis. To ask Nemotron to interpret the complete scan, explicitly select “Run live Nemotron” below.';
    $('modelStatus').textContent='Three local visual scans completed. No model request made; Token Factory usage: 0 for this mission.';setCoreState('ALL RACKS SCANNED · READY FOR NEMOTRON REVIEW');renderCase();
   }
  }
