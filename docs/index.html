@@ -155,7 +155,36 @@ async function live(){
  $('liveBtn').disabled=true;$('modelStatus').textContent='Sending one explicitly requested inference request…';$('diagnosis').textContent='Waiting for the configured diagnosis API. No hardware action can be executed.';
  try{
   const res=await fetch('https://silicon-technician-judge-api.onrender.com/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scenario:d.scenario,scenario_name:d.name,source:d.source,vision_findings:visionFindings,robot_mission_complete:missionDone,telemetry:{cpu_c:d.cpu,thermal_headroom_c:Math.max(0,100-d.cpu),inlet_c:d.inlet,fan1_rpm:d.fan,psu_output_w:d.psu}})});
-  const body=await res.json();$('diagnosis').textContent=JSON.stringify(body,null,2);$('modelStatus').textContent=res.ok?'Live API response received. Nemotron reviewed the submitted rack scan summaries; no hardware action executed.':'Live inference failed (HTTP '+res.status+'). No automatic retry was made.';if(res.ok&&body&&body.diagnosis){speak('Nemotron diagnosis. '+String(body.diagnosis).slice(0,450)+'. Recommended action: '+String(body.recommended_action||'review the evidence with a human technician').slice(0,300)+'. No hardware action was executed.');}
+  const body=await res.json();
+  if(!res.ok||!body||!body.diagnosis)throw new Error(body.error||('Inference failed HTTP '+res.status));
+  $('diagnosis').textContent='LIVE NEMOTRON DIAGNOSIS\\n\\n'+JSON.stringify(body,null,2);
+  $('modelStatus').textContent='Actual live model response received. Checking its recommendation against simulation safety rules.';
+  speak('Nemotron diagnosis. '+String(body.diagnosis).slice(0,350));
+  const rec=String(body.recommended_action||'').toLowerCase();
+  let action=null;
+  if(selected==='fan' && /fan|cooling|tachometer/.test(rec) && d.fan===0)action='restore_fan';
+  if(selected==='hot' && /airflow|inlet|cooling|temperature/.test(rec) && d.inlet>=35)action='improve_airflow';
+  if(selected==='psu' && /psu|power supply|power feed|redundant power/.test(rec) && d.psu<500)action='inspect_psu';
+  if(selected==='healthy' && d.fan>0 && d.inlet<30 && d.psu>=500)action='no_action';
+  if(!action){$('modelStatus').textContent='SAFETY HOLD: model recommendation did not match an approved action for this evidence. No simulated repair performed.';$('diagnosis').textContent+='\\n\\nSAFETY GATE: HOLD\\nThe model response was retained, but no simulated repair was performed.';speak('Safety hold. No simulated repair was performed.');return;}
+  if(action==='no_action'){$('modelStatus').textContent='Healthy baseline verified; no repair needed.';$('diagnosis').textContent+='\\n\\nSIMULATION OUTCOME\\nNo repair required. Healthy baseline retained. No hardware action executed.';speak('The model recommendation and healthy readings agree. No repair was needed.');return;}
+  $('modelStatus').textContent='Applying model-matched simulated action: '+action;
+  setStatus('SIMULATED REPAIR');
+  speak('Starting simulated '+action.replaceAll('_',' ')+'.');
+  await new Promise(resolve=>setTimeout(resolve,1200));
+  const before={cpu_c:d.cpu,inlet_c:d.inlet,fan_rpm:d.fan,psu_output_w:d.psu};
+  const after={...before};
+  if(action==='restore_fan'){after.fan_rpm=7200;after.cpu_c=64;}
+  if(action==='improve_airflow'){after.inlet_c=25;after.cpu_c=62;}
+  if(action==='inspect_psu'){after.psu_output_w=680;}
+  const verified=(action==='restore_fan'&&after.fan_rpm>0&&after.cpu_c<80)||(action==='improve_airflow'&&after.inlet_c<30)||(action==='inspect_psu'&&after.psu_output_w>=500);
+  const outcome={action,before,after,verification:verified?'PASS':'FAIL',model:body.model||'reported by API',request_id:body.request_id||null,hardware_action_executed:false};
+  $('diagnosis').textContent+='\\n\\nSIMULATED ACTION & VERIFICATION\\n'+JSON.stringify(outcome,null,2);
+  $('modelStatus').textContent=verified?'SIMULATION VERIFIED: post-action telemetry passed the defined threshold.':'VERIFICATION FAILED: no success claim.';
+  setStatus(verified?'RECOVERY VERIFIED':'VERIFY FAILED');
+  speak(verified?'The model recommended '+action.replaceAll('_',' ')+'. Simulated telemetry passed verification. No physical hardware was changed.':'The simulated action failed verification. Human review is required.');
+  reportData={...reportData,live_model:body.model,live_request_id:body.request_id,live_diagnosis:body.diagnosis,simulated_action:action,simulation_outcome:outcome};
+  $('report').textContent=JSON.stringify(reportData,null,2);
  }catch(e){$('modelStatus').textContent='Request failed or backend unavailable. No automatic retry was made.';$('diagnosis').textContent='LIVE INFERENCE UNAVAILABLE\n\n'+String(e)+'\n\nUse the recorded advisory to continue the demo. No automatic retry was made.'}
  finally{$('liveBtn').disabled=false}
 }
