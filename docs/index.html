@@ -9,11 +9,11 @@
 <section class="panel" id="judgeGuide" style="margin-top:16px;border-color:#39758b;background:linear-gradient(135deg,#0c2637,#091724)">
 <div class="scenehead"><div><div class="eyebrow">JUDGE MODE / FOLLOW THIS ROUTE</div><h2>Guided evaluation · one step at a time</h2><div class="muted" style="font-size:12px">Use this page as your private judge walkthrough. Complete each step, record what you observe, then send me your verdict.</div></div><span class="pill" id="judgeProgress">READY · 6 STEPS</span></div>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px">
-<div class="step"><span class="n">1</span><div><b>Design & navigation</b><p>Watch the robot travel to all three racks and listen to the spoken scan.</p><button class="smallbtn" data-judge="mission">Start inspection</button></div></div>
-<div class="step"><span class="n">2</span><div><b>Fault localization</b><p>Confirm only the selected fault rack is flagged and compare the telemetry.</p><button class="smallbtn" data-judge="fan">Load fan failure</button></div></div>
+<div class="step"><span class="n">1</span><div><b>1 · Fault scenario</b><p>Load fan failure, then watch the robot inspect all three racks.</p><button class="smallbtn" data-judge="fan">Run fan-failure mission</button></div></div>
+<div class="step"><span class="n">2</span><div><b>2 · Robot navigation</b><p>Watch the route, rack visits, and spoken findings.</p><button class="smallbtn" data-judge="mission">Start inspection</button></div></div>
 <div class="step"><span class="n">3</span><div><b>Live AI reasoning</b><p>Request Nemotron once. Inspect its actual diagnosis, evidence, latency and action code.</p><button class="smallbtn" data-judge="live">Run live Nemotron</button></div></div>
 <div class="step"><span class="n">4</span><div><b>Safety & recovery</b><p>Confirm the safety gate approves the action and before/after telemetry is reported.</p><button class="smallbtn" data-judge="report">View diagnosis report</button></div></div>
-<div class="step"><span class="n">5</span><div><b>Negative control</b><p>Load Healthy run. It should recommend no repair and retain healthy readings.</p><button class="smallbtn" data-judge="healthy">Load healthy control</button></div></div>
+<div class="step"><span class="n">5</span><div><b>Negative control</b><p>Load Healthy run. It should recommend no repair and retain healthy readings.</p><button class="smallbtn" data-judge="healthy">Run healthy control</button></div></div>
 <div class="step"><span class="n">6</span><div><b>Evidence & verdict</b><p>Export the mission JSON and score the four judging criteria below.</p><button class="smallbtn" data-judge="score">Open scorecard</button></div></div>
 </div><div class="divider"></div><div class="muted" style="font-size:11px">COST GUARD: navigation and scenario selection do not call Nemotron. Step 3 makes one real inference request only after confirmation. No automatic retries. Repairs are simulation-only.</div></section>
 <div class="grid">
@@ -130,7 +130,7 @@ function scanRackVision(index){
  const visualDetected=injected;
  const finding={rack:String.fromCharCode(65+index),visual_fault_marker_detected:visualDetected,red_pixel_count:redPixels,scenario_sensor_anomaly:injected?cases[selected].name:'none detected',telemetry:{cpu_c:injected?cases[selected].cpu:54+index*3,inlet_c:injected?cases[selected].inlet:22+index,fan_rpm:injected?cases[selected].fan:7100-index*80,psu_output_w:injected?cases[selected].psu:680},confidence:visualDetected?'high':redPixels>3?'review':'low'};
  visionFindings.push(finding);
- const speech=visualDetected?'Nemotron, visual inspection at Rack '+finding.rack+' detected a red fault indicator. The simulated sensor pattern is '+finding.scenario_anomaly+'. CPU '+finding.telemetry.cpu_c+' degrees Celsius. I recommend targeted diagnosis.': 'Nemotron, visual inspection at Rack '+finding.rack+' found no clear red fault marker. The rack appears nominal in this simulation. Continue inspection.';
+ const speech=visualDetected?'Nemotron, visual inspection at Rack '+finding.rack+' detected a red fault indicator. The simulated sensor pattern is '+finding.scenario_sensor_anomaly+'. CPU '+finding.telemetry.cpu_c+' degrees Celsius. I recommend targeted diagnosis.': 'Nemotron, visual inspection at Rack '+finding.rack+' found no clear red fault marker. The rack appears nominal in this simulation. Continue inspection.';
  $('diagnosis').textContent='CAMERA VISION SCAN · RACK '+finding.rack+'\nRed pixels segmented: '+redPixels+'\nFault marker: '+(visualDetected?'DETECTED':'NOT DETECTED')+'\nSensor anomaly: '+finding.scenario_sensor_anomaly+'\n\nSpoken report: '+speech;
  $('modelStatus').textContent='Local computer-vision scan complete for Rack '+finding.rack+'. No model request made.';
  speak(speech);
@@ -215,7 +215,7 @@ renderCase();
 document.querySelectorAll("[data-judge]").forEach(btn=>btn.addEventListener("click",()=>{
  const action=btn.dataset.judge;
  if(action==="mission"){document.getElementById("missionBtn").click();document.getElementById("missionBtn").scrollIntoView({behavior:"smooth",block:"center"});return;}
- if(action==="fan"||action==="healthy"){document.querySelector("[data-case=\""+action+"\"]").click();document.getElementById("scenarioButtons").scrollIntoView({behavior:"smooth",block:"center"});return;}
+ if(action==="fan"||action==="healthy"){document.querySelector("[data-case="+String.fromCharCode(34)+action+String.fromCharCode(34)+"]").click();document.getElementById("missionBtn").click();document.getElementById("missionBtn").scrollIntoView({behavior:"smooth",block:"center"});return;}
  if(action==="live"){document.getElementById("liveBtn").scrollIntoView({behavior:"smooth",block:"center"});if(missionDone)document.getElementById("liveBtn").click();else document.getElementById("modelStatus").textContent="First complete Step 1, then return here to request live inference.";return;}
  if(action==="report"){document.getElementById("diagnosis").scrollIntoView({behavior:"smooth",block:"center"});return;}
  if(action==="score"){document.getElementById("judgeScorecard").scrollIntoView({behavior:"smooth",block:"start"});}
