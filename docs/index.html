@@ -6,6 +6,16 @@
 </style></head>
 <body><div class="wrap">
 <header><div class="brand"><div class="logo">ST</div><div><div class="eyebrow">Embodied systems · supervised autonomy</div><h1>SILICON TECHNICIAN <span style="color:var(--cyan)">/ PHYSICAL AI MISSION LAB</span></h1><div class="muted" style="font-size:12px">Autonomous data-center inspection · browser simulation</div></div></div><div class="tag">SIMULATION MODE · NO HARDWARE CONNECTED</div></header>
+<section class="panel" id="judgeGuide" style="margin-top:16px;border-color:#39758b;background:linear-gradient(135deg,#0c2637,#091724)">
+<div class="scenehead"><div><div class="eyebrow">JUDGE MODE / FOLLOW THIS ROUTE</div><h2>Guided evaluation · one step at a time</h2><div class="muted" style="font-size:12px">Use this page as your private judge walkthrough. Complete each step, record what you observe, then send me your verdict.</div></div><span class="pill" id="judgeProgress">READY · 6 STEPS</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px">
+<div class="step"><span class="n">1</span><div><b>Design & navigation</b><p>Watch the robot travel to all three racks and listen to the spoken scan.</p><button class="smallbtn" data-judge="mission">Start inspection</button></div></div>
+<div class="step"><span class="n">2</span><div><b>Fault localization</b><p>Confirm only the selected fault rack is flagged and compare the telemetry.</p><button class="smallbtn" data-judge="fan">Load fan failure</button></div></div>
+<div class="step"><span class="n">3</span><div><b>Live AI reasoning</b><p>Request Nemotron once. Inspect its actual diagnosis, evidence, latency and action code.</p><button class="smallbtn" data-judge="live">Run live Nemotron</button></div></div>
+<div class="step"><span class="n">4</span><div><b>Safety & recovery</b><p>Confirm the safety gate approves the action and before/after telemetry is reported.</p><button class="smallbtn" data-judge="report">View diagnosis report</button></div></div>
+<div class="step"><span class="n">5</span><div><b>Negative control</b><p>Load Healthy run. It should recommend no repair and retain healthy readings.</p><button class="smallbtn" data-judge="healthy">Load healthy control</button></div></div>
+<div class="step"><span class="n">6</span><div><b>Evidence & verdict</b><p>Export the mission JSON and score the four judging criteria below.</p><button class="smallbtn" data-judge="score">Open scorecard</button></div></div>
+</div><div class="divider"></div><div class="muted" style="font-size:11px">COST GUARD: navigation and scenario selection do not call Nemotron. Step 3 makes one real inference request only after confirmation. No automatic retries. Repairs are simulation-only.</div></section>
 <div class="grid">
 <section class="panel"><div class="scenehead"><div><div class="eyebrow">01 / PERCEPTION & NAVIGATION</div><h2>Virtual data-center floor</h2><div class="muted" style="font-size:12px">All three racks · simulated visual fault markers · speech narration · deterministic path planner</div></div><span id="missionBadge" class="pill">MISSION READY</span></div>
 <div class="scene"><canvas id="world" width="1000" height="650" aria-label="Hidden compatibility canvas"></canvas>
@@ -50,6 +60,14 @@ Choose a scenario, run the inspection, then review the advisory. No model call h
 <div><div class="eyebrow">05 / MISSION EVIDENCE</div><h2>Inspection record</h2><div id="report" class="console">No mission completed yet. Run the inspection to create a local evidence record.</div><div class="controls"><button id="downloadBtn">↓ Export mission JSON</button><button id="printBtn">Print / save PDF</button></div><div class="footnote">Reports are generated in your browser. Exporting does not call the model or upload a file.</div></div></div></section>
 </div><footer class="footnote" style="border-top:1px solid #18384b;padding-top:14px;margin-top:16px">Silicon Technician · Physical AI prototype · Simulated environment only · No physical hardware actions · Human-supervised maintenance</footer>
 </div>
+<section class="panel full" id="judgeScorecard" style="margin-top:16px"><div class="eyebrow">06 / YOUR EVALUATION</div><h2>Judge scorecard · record what you actually observed</h2><p class="muted" style="font-size:12px">Score 1 (weak) to 5 (excellent). Leave unverified criteria unscored. These are your observations, not automatically generated claims.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px">
+<label>Technological implementation<select id="scoreTech" class="judgeScore"><option value="">Not scored</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select><small class="muted">Live inference, reliable flow, safety checks, verifiable repair.</small></label>
+<label>Design & usability<select id="scoreDesign" class="judgeScore"><option value="">Not scored</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select><small class="muted">Can you follow the next step without getting lost?</small></label>
+<label>Potential impact<select id="scoreImpact" class="judgeScore"><option value="">Not scored</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select><small class="muted">Could early diagnosis help data-center technicians?</small></label>
+<label>Quality of idea<select id="scoreIdea" class="judgeScore"><option value="">Not scored</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select><small class="muted">Is the agent loop differentiated and coherent?</small></label></div>
+<label style="display:block;margin-top:12px">Your notes<textarea id="judgeNotes" rows="4" placeholder="What worked? What failed? What evidence did you see? What would you change?" style="display:block;width:100%;margin-top:5px;padding:10px;background:#06131e;color:var(--text);border:1px solid var(--line);border-radius:8px"></textarea></label>
+<div class="controls"><button class="primary" id="exportJudge">Export judge feedback JSON</button><button id="copyJudge">Copy judge feedback</button></div><div id="judgeExportStatus" class="footnote">Your scorecard stays in this browser until you export or copy it.</div></section>
 <script>
 (function(){
 const canvas=document.getElementById('world'),ctx=canvas.getContext('2d');
@@ -160,13 +178,9 @@ async function live(){
   $('diagnosis').textContent='LIVE NEMOTRON DIAGNOSIS\\n\\n'+JSON.stringify(body,null,2);
   $('modelStatus').textContent='Actual live model response received. Checking its recommendation against simulation safety rules.';
   speak('Nemotron diagnosis. '+String(body.diagnosis).slice(0,350));
-  const rec=String(body.recommended_action||'').toLowerCase();
-  let action=null;
-  if(selected==='fan' && /fan|cooling|tachometer/.test(rec) && d.fan===0)action='restore_fan';
-  if(selected==='hot' && /airflow|inlet|cooling|temperature/.test(rec) && d.inlet>=35)action='improve_airflow';
-  if(selected==='psu' && /psu|power supply|power feed|redundant power/.test(rec) && d.psu<500)action='inspect_psu';
-  if(selected==='healthy' && d.fan>0 && d.inlet<30 && d.psu>=500)action='no_action';
-  if(!action){$('modelStatus').textContent='SAFETY HOLD: model recommendation did not match an approved action for this evidence. No simulated repair performed.';$('diagnosis').textContent+='\\n\\nSAFETY GATE: HOLD\\nThe model response was retained, but no simulated repair was performed.';speak('Safety hold. No simulated repair was performed.');return;}
+  const action=body.action_code;
+  const permitted=["restore_fan","improve_airflow","inspect_psu","no_action"];
+  if(!body.simulation_action_permitted||!permitted.includes(action)){ $("modelStatus").textContent="SAFETY HOLD: server-side deterministic checks did not approve a simulation action. No simulated repair performed.";$("diagnosis").textContent+="\n\nSAFETY GATE: HOLD\nNo repair was performed.";speak("Safety hold. No simulated repair was performed.");return;}
   if(action==='no_action'){$('modelStatus').textContent='Healthy baseline verified; no repair needed.';$('diagnosis').textContent+='\\n\\nSIMULATION OUTCOME\\nNo repair required. Healthy baseline retained. No hardware action executed.';speak('The model recommendation and healthy readings agree. No repair was needed.');return;}
   $('modelStatus').textContent='Applying model-matched simulated action: '+action;
   setStatus('SIMULATED REPAIR');
@@ -198,4 +212,15 @@ $('downloadBtn').addEventListener('click',()=>{if(!reportData){alert('Run the in
 $('printBtn').addEventListener('click',()=>window.print());
 renderCase();
 })();
+document.querySelectorAll("[data-judge]").forEach(btn=>btn.addEventListener("click",()=>{
+ const action=btn.dataset.judge;
+ if(action==="mission"){document.getElementById("missionBtn").click();document.getElementById("missionBtn").scrollIntoView({behavior:"smooth",block:"center"});return;}
+ if(action==="fan"||action==="healthy"){document.querySelector("[data-case=\""+action+"\"]").click();document.getElementById("scenarioButtons").scrollIntoView({behavior:"smooth",block:"center"});return;}
+ if(action==="live"){document.getElementById("liveBtn").scrollIntoView({behavior:"smooth",block:"center"});if(missionDone)document.getElementById("liveBtn").click();else document.getElementById("modelStatus").textContent="First complete Step 1, then return here to request live inference.";return;}
+ if(action==="report"){document.getElementById("diagnosis").scrollIntoView({behavior:"smooth",block:"center"});return;}
+ if(action==="score"){document.getElementById("judgeScorecard").scrollIntoView({behavior:"smooth",block:"start"});}
+}));
+function judgeFeedback(){return {project:"Silicon Technician — Physical AI Mission Lab",timestamp:new Date().toISOString(),scores:{technological_implementation:document.getElementById("scoreTech").value||null,design_usability:document.getElementById("scoreDesign").value||null,potential_impact:document.getElementById("scoreImpact").value||null,quality_of_idea:document.getElementById("scoreIdea").value||null},notes:document.getElementById("judgeNotes").value,observed:{mission_complete:!!missionDone,three_rack_scans:visionFindings.length,live_model:reportData?.live_model||null,simulation_outcome:reportData?.simulation_outcome||null},caution:"Scores are user-entered; observations refer to a browser simulation, not physical hardware."};}
+document.getElementById("exportJudge").addEventListener("click",()=>{const blob=new Blob([JSON.stringify(judgeFeedback(),null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="silicon-technician-judge-feedback.json";a.click();URL.revokeObjectURL(a.href);document.getElementById("judgeExportStatus").textContent="Judge feedback JSON exported.";});
+document.getElementById("copyJudge").addEventListener("click",async()=>{const data=JSON.stringify(judgeFeedback(),null,2);try{await navigator.clipboard.writeText(data);document.getElementById("judgeExportStatus").textContent="Feedback copied. Paste it into ChatGPT so we can improve the project.";}catch(e){document.getElementById("judgeExportStatus").textContent="Clipboard unavailable. Export judge feedback JSON instead.";}});
 </script></body></html>
