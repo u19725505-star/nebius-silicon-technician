@@ -1,6 +1,6 @@
 import os, json, time, uuid
 from datetime import datetime, timezone
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from openai import OpenAI
 
 app = Flask(__name__)
@@ -8,6 +8,19 @@ BASE_URL = "https://api.tokenfactory.nebius.com/v1/"
 DEFAULT_MODEL = os.getenv("NEBIUS_MODEL", "nvidia/Nemotron-3-Ultra-550b-a55b")
 MAX_REQUESTS_PER_PROCESS = int(os.getenv("MAX_DIAGNOSES_PER_PROCESS", "25"))
 requests_seen = 0
+
+@app.after_request
+def cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "https://u19725505-star.github.io"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Vary"] = "Origin"
+    return response
+
+@app.route("/api/diagnose", methods=["OPTIONS"])
+def diagnose_preflight():
+    return make_response("", 204)
+
 
 @app.get("/")
 def health():
