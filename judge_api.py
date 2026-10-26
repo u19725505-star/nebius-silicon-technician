@@ -79,7 +79,7 @@ def diagnose():
     requests_seen += 1
     try:
         client = OpenAI(base_url=BASE_URL,api_key="".join(os.environ["NEBIUS_API_KEY"].split()),timeout=45.0,max_retries=0)
-        response = client.chat.completions.create(model=DEFAULT_MODEL,messages=[{"role":"system","content":system},{"role":"user","content":user}],max_tokens=500,temperature=0.0)
+        response = client.chat.completions.create(model=DEFAULT_MODEL,messages=[{"role":"system","content":system},{"role":"user","content":user}],max_tokens=4000,temperature=0.0)
         raw = response.choices[0].message.content or ""
         usage = response.usage
         try:
