@@ -1,3 +1,6 @@
+ARCHIVED HISTORICAL AUDIT OUTPUT — NOT A CURRENT SUBMISSION READINESS REPORT
+This output predates the current README and later benchmark runs. Its README-length/content checks are stale; its 17/20 result is the recorded seed-777 run, not the later 60-case runs. Preserve this file as historical evidence, and consult the README for the benchmark set descriptions. Re-run the audit before treating any status as current. Live audit mode may consume Token Factory credits.
+
 == submission basics
 [PASS] file present: LICENSE
 [PASS] file present: README.md
