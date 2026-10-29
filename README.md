@@ -28,6 +28,18 @@
 
 > **Judge quick start:** Open the [Live Mission Lab](https://silicon-technician-judge-api.onrender.com/), choose **Fan failure**, **Hot inlet**, or **PSU anomaly**, and run the three-rack inspection. Review the evidence and open or export the mission report. **Show recorded advisory** is local and makes no model call. **Run live Nemotron** sends a request to the configured backend and may consume Token Factory credits; it is optional.
 
+## Live demo evidence — October 28, 2026
+
+We performed a live demonstration on **October 28, 2026** and captured the actual response from the deployed Mission Lab workflow. The exported report is committed to this repository:
+
+**[View the live demo diagnosis report (JSON)](https://github.com/u19725505-star/nebius-silicon-technician/blob/main/silicon-technician-diagnosis-report%202.json)**
+
+The recorded run includes a successful live Nebius Token Factory inference using `nvidia/Nemotron-3-Ultra-550b-a55b`. The model returned a schema-validated **CRITICAL** diagnosis for the simulated Rack B fan-failure scenario, citing a 0 RPM fan reading, CPU temperature of 91°C, and 9°C thermal headroom. The captured inference latency was **9,817 ms**.
+
+The same evidence package records a separate browser-only simulated recovery: fan speed changed from 0 to 7,200 RPM and CPU temperature from 91°C to 64°C, with the simulation reporting `PASS`.
+
+**Evidence boundary:** the model inference was live; the rack telemetry, SVG scenario markers, and recovery values were synthetic/simulated. The report explicitly records that no physical hardware was connected and no hardware action was executed. This is a captured demonstration result, not a claim of production-hardware validation.
+
 ## The problem
 
 Data-center faults rarely explain themselves through a single threshold. Sensor anomalies can trigger false alarms, scheduled maintenance can resemble a fault, and CPU scheduling contention may not appear in baseboard management controller (BMC) telemetry. Technicians need evidence-linked reasoning, bounded next steps, and a clear separation between model recommendations and authorized action.
