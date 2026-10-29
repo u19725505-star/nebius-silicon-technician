@@ -1,0 +1,140 @@
+{
+  "project": "Silicon Technician — Physical AI Mission Lab",
+  "timestamp": "2026-10-29T00:12:28.925Z",
+  "mode": "browser_simulation_with_synthetic_visual_markers",
+  "scenario": "Fan failure",
+  "selected_fault_rack": "Rack B",
+  "rack_vision_findings": [
+    {
+      "rack": "A",
+      "visual_fault_marker_detected": false,
+      "red_pixel_count": 0,
+      "scenario_sensor_anomaly": "none detected",
+      "telemetry": {
+        "cpu_c": 54,
+        "inlet_c": 22,
+        "fan_rpm": 7100,
+        "psu_output_w": 680
+      },
+      "confidence": "low"
+    },
+    {
+      "rack": "B",
+      "visual_fault_marker_detected": true,
+      "red_pixel_count": 0,
+      "scenario_sensor_anomaly": "Fan failure",
+      "telemetry": {
+        "cpu_c": 91,
+        "inlet_c": 25,
+        "fan_rpm": 0,
+        "psu_output_w": 690
+      },
+      "confidence": "high"
+    },
+    {
+      "rack": "C",
+      "visual_fault_marker_detected": false,
+      "red_pixel_count": 0,
+      "scenario_sensor_anomaly": "none detected",
+      "telemetry": {
+        "cpu_c": 60,
+        "inlet_c": 24,
+        "fan_rpm": 6940,
+        "psu_output_w": 680
+      },
+      "confidence": "low"
+    }
+  ],
+  "route": [
+    {
+      "x": 720,
+      "y": 295
+    },
+    {
+      "x": 720,
+      "y": 430
+    },
+    {
+      "x": 280,
+      "y": 430
+    },
+    {
+      "x": 280,
+      "y": 295
+    },
+    {
+      "x": 280,
+      "y": 430
+    },
+    {
+      "x": 500,
+      "y": 430
+    },
+    {
+      "x": 500,
+      "y": 295
+    },
+    {
+      "x": 500,
+      "y": 430
+    },
+    {
+      "x": 720,
+      "y": 430
+    },
+    {
+      "x": 720,
+      "y": 295
+    }
+  ],
+  "simulated_elapsed_seconds": 12.68,
+  "spoken_reports_enabled": true,
+  "guardrails": {
+    "navigation": "deterministic local route",
+    "vision": "SVG-rendered simulated marker plus synthetic telemetry; no camera feed",
+    "physical_hardware_connected": false,
+    "hardware_action_executed": false,
+    "human_review_required": true
+  },
+  "live_model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "live_request_id": "01b44486-46c0-4010-9ba8-387264efdf25",
+  "live_diagnosis": "Fan failure on rack B causing CPU overheating at 91°C with only 9°C thermal headroom; fan1 RPM reads 0",
+  "simulated_action": "restore_fan",
+  "simulation_outcome": {
+    "action": "restore_fan",
+    "before": {
+      "cpu_c": 91,
+      "inlet_c": 25,
+      "fan_rpm": 0,
+      "psu_output_w": 690
+    },
+    "after": {
+      "cpu_c": 64,
+      "inlet_c": 25,
+      "fan_rpm": 7200,
+      "psu_output_w": 690
+    },
+    "verification": "PASS",
+    "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+    "request_id": "01b44486-46c0-4010-9ba8-387264efdf25",
+    "hardware_action_executed": false,
+    "scope": "browser simulation only"
+  },
+  "live_model_status": "SIMULATION VERIFIED: live telemetry panel updated and fault marker cleared.",
+  "diagnosis_console_snapshot": "LIVE NEMOTRON DIAGNOSIS\\n\\n{\n  \"action_code\": \"restore_fan\",\n  \"diagnosis\": \"Fan failure on rack B causing CPU overheating at 91°C with only 9°C thermal headroom; fan1 RPM reads 0\",\n  \"evidence\": [\n    \"fan1_rpm: 0\",\n    \"cpu_c: 91\",\n    \"thermal_headroom_c: 9\",\n    \"inlet_c: 25\",\n    \"psu_output_w: 690\",\n    \"rack B visual_fault_marker_detected: true\",\n    \"rack B scenario_sensor_anomaly: Fan failure\",\n    \"rack B telemetry fan_rpm: 0\",\n    \"rack B telemetry cpu_c: 91\"\n  ],\n  \"guardrails\": [\n    \"Server-side API key; never sent to browser\",\n    \"JSON response mode requested and required fields validated\",\n    \"Diagnosis grounded against submitted scenario measurements; human review required\",\n    \"No physical hardware actions available from this endpoint\"\n  ],\n  \"hardware_action_executed\": false,\n  \"human_review_required\": true,\n  \"latency_ms\": 9817,\n  \"mode\": \"live\",\n  \"model\": \"nvidia/Nemotron-3-Ultra-550b-a55b\",\n  \"recommended_action\": \"Replace or restart the failed fan on rack B immediately to restore cooling before CPU exceeds thermal limit\",\n  \"request_id\": \"01b44486-46c0-4010-9ba8-387264efdf25\",\n  \"severity\": \"CRITICAL\",\n  \"simulation_action_permitted\": true,\n  \"source\": \"Live Nebius Token Factory inference using submitted scenario data\",\n  \"unsupported_claims\": [],\n  \"usage\": {\n    \"completion_tokens\": 601,\n    \"prompt_tokens\": 570\n  }\n}\\n\\nSIMULATED ACTION & VERIFICATION\\n{\n  \"action\": \"restore_fan\",\n  \"before\": {\n    \"cpu_c\": 91,\n    \"inlet_c\": 25,\n    \"fan_rpm\": 0,\n    \"psu_output_w\": 690\n  },\n  \"after\": {\n    \"cpu_c\": 64,\n    \"inlet_c\": 25,\n    \"fan_rpm\": 7200,\n    \"psu_output_w\": 690\n  },\n  \"verification\": \"PASS\",\n  \"model\": \"nvidia/Nemotron-3-Ultra-550b-a55b\",\n  \"request_id\": \"01b44486-46c0-4010-9ba8-387264efdf25\",\n  \"hardware_action_executed\": false,\n  \"scope\": \"browser simulation only\"\n}",
+  "report_metadata": {
+    "generated_at": "2026-10-29T00:13:57.078Z",
+    "export_scope": "local browser download",
+    "model_call_made_by_export": false
+  },
+  "safety_summary": {
+    "physical_hardware_connected": false,
+    "hardware_action_executed": false,
+    "human_review_required": true
+  },
+  "technical_limitations": [
+    "Synthetic telemetry",
+    "SVG-rendered scenario markers; not validated computer vision",
+    "No physical hardware action"
+  ]
+}
