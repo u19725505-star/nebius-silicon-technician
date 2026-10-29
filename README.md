@@ -6,6 +6,7 @@
 **See the signal. Understand the system. Keep humans in control.**
 
 [![Live Mission Lab](https://img.shields.io/badge/Live-Mission%20Lab-76B900?style=for-the-badge&logo=render&logoColor=white)](https://silicon-technician-judge-api.onrender.com/)
+[![Watch the Demo](https://img.shields.io/badge/YouTube-Watch%20the%20Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/watch?v=KoFntgl08Zk)
 [![NVIDIA Nemotron](https://img.shields.io/badge/Model-NVIDIA%20Nemotron-76B900?style=flat-square&logo=nvidia&logoColor=white)](https://build.nvidia.com/)
 [![Nebius Token Factory](https://img.shields.io/badge/Inference-Nebius%20Token%20Factory-273849?style=flat-square)](https://tokenfactory.nebius.com/)
 [![Safety](https://img.shields.io/badge/Hardware%20Control-Disabled-success?style=flat-square)](#safety-by-design)
@@ -15,6 +16,12 @@
 </div>
 
 ---
+
+## Watch the project demo
+
+**[▶ Watch Silicon Technician on YouTube](https://youtube.com/watch?v=KoFntgl08Zk)** — a walkthrough of the AI-assisted data-center diagnosis workflow, live Nemotron inference evidence, simulated rack inspection, and safety boundaries.
+
+> The video demonstrates live model inference separately from synthetic telemetry and browser-only simulation. It does not show physical hardware control or a real hardware repair.
 
 ## Mission at a glance
 
